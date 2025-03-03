@@ -40,9 +40,9 @@ public class ComplaintInfo implements Serializable {
     private String createDate;
 
     /**
-     * 所属公司
+     * 所属员工
      */
-    private Integer merchantId;
+    private Integer staffId;
 
     /**
      * 投诉内容
@@ -58,7 +58,7 @@ public class ComplaintInfo implements Serializable {
     private String userName;
 
     @TableField(exist = false)
-    private String merchantName;
+    private String staffName;
 
 
 }

@@ -32,7 +32,7 @@ public interface IOrderInfoService extends IService<OrderInfo> {
      * @param orderInfo 订单信息
      * @return 结果
      */
-    OrderInfo getPriceTotal(OrderInfo orderInfo);
+    OrderInfo getPriceTotal(OrderInfo orderInfo) throws FebsException;
 
     /**
      * 员工接单

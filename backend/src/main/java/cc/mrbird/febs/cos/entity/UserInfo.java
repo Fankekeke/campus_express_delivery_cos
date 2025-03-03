@@ -87,4 +87,9 @@ public class UserInfo implements Serializable {
      * 积分余额
      */
     private BigDecimal integral;
+
+    /**
+     * 用户类型(1.用户 2.配送员)
+     */
+    private String type;
 }

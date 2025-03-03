@@ -10,7 +10,9 @@
         pr.code,
         pr.remark,
         pr.create_date,
-        pr.merchant_id
+        pr.min_value,
+        pr.max_value,
+        pr.type
         from
         price_rules pr
         where
@@ -20,9 +22,6 @@
         </if>
         <if test="priceRules.remark != null and priceRules.remark != ''">
             AND pr.remark LIKE CONCAT('%',#{priceRules.remark},'%')
-        </if>
-        <if test="priceRules.merchantId != null">
-            AND mi.user_id LIKE CONCAT('%',#{priceRules.merchantId},'%')
         </if>
         order by
         pr.create_date desc

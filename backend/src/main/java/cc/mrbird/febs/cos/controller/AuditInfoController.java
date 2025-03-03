@@ -3,14 +3,17 @@ package cc.mrbird.febs.cos.controller;
 
 import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.cos.entity.AuditInfo;
-import cc.mrbird.febs.cos.entity.MerchantInfo;
+import cc.mrbird.febs.cos.entity.StaffInfo;
+import cc.mrbird.febs.cos.entity.UserInfo;
 import cc.mrbird.febs.cos.service.IAuditInfoService;
-import cc.mrbird.febs.cos.service.IMerchantInfoService;
+import cc.mrbird.febs.cos.service.IStaffInfoService;
+import cc.mrbird.febs.cos.service.IUserInfoService;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -26,7 +29,9 @@ public class AuditInfoController {
 
     private final IAuditInfoService auditInfoService;
 
-    private final IMerchantInfoService merchantInfoService;
+    private final IUserInfoService userInfoService;
+
+    private final IStaffInfoService staffInfoService;
 
     /**
      * 分页获取审核信息
@@ -48,18 +53,32 @@ public class AuditInfoController {
      * @return 结果
      */
     @PutMapping("/check")
+    @Transactional(rollbackFor = Exception.class)
     public R check(@RequestParam Integer auditId, @RequestParam Integer type) {
-        // 更新公司审核信息
+        // 更新用户审核信息
         AuditInfo auditInfo = auditInfoService.getById(auditId);
-        MerchantInfo merchantInfo = new MerchantInfo();
-        merchantInfo.setId(auditInfo.getMerchantId());
+        UserInfo userInfo = userInfoService.getById(auditInfo.getUserId());
+
         auditInfo.setAuditStatus(type);
         if (type == 1) {
-            merchantInfo.setStatus("1");
-        } else {
-            merchantInfo.setStatus("0");
+            userInfo.setType("2");
+            userInfoService.updateById(userInfo);
         }
-        merchantInfoService.updateById(merchantInfo);
+
+        // 添加员工信息
+        if (type == 1) {
+            StaffInfo staffInfo = new StaffInfo();
+            staffInfo.setCode("STF-" + System.currentTimeMillis());
+            staffInfo.setName(userInfo.getName());
+            staffInfo.setPhone(userInfo.getPhone());
+            staffInfo.setUserId(userInfo.getId());
+            staffInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
+            staffInfo.setImages(userInfo.getImages());
+            staffInfo.setStatus(1);
+            staffInfoService.save(staffInfo);
+        }
+        // 更新审核时间
+        auditInfo.setStatusDate(DateUtil.formatDateTime(new Date()));
         return R.ok(auditInfoService.updateById(auditInfo));
     }
 
@@ -92,11 +111,7 @@ public class AuditInfoController {
      */
     @PostMapping
     public R save(AuditInfo auditInfo) {
-        // 设置所属搬家公司
-        MerchantInfo merchantInfo = merchantInfoService.getOne(Wrappers.<MerchantInfo>lambdaQuery().eq(MerchantInfo::getUserId, auditInfo.getMerchantId()));
-        if (merchantInfo != null) {
-            auditInfo.setMerchantId(merchantInfo.getId());
-        }
+        // 设置所属用户
         auditInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
         auditInfo.setAuditStatus(0);
         return R.ok(auditInfoService.save(auditInfo));

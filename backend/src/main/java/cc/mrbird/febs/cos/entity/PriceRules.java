@@ -45,9 +45,17 @@ public class PriceRules implements Serializable {
     private String createDate;
 
     /**
-     * 所属公司
+     * 类型（1.重量 2.距离）
      */
-    private Integer merchantId;
+    private String type;
 
+    /**
+     * 最小值
+     */
+    private BigDecimal minValue;
 
+    /**
+     * 最大值
+     */
+    private BigDecimal maxValue;
 }

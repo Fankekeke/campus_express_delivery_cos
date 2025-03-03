@@ -51,6 +51,8 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 
     private final IBulletinInfoService bulletinInfoService;
 
+    private final IPriceRulesService priceRulesService;
+
     /**
      * 分页获取订单信息
      *
@@ -70,7 +72,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
      * @return 结果
      */
     @Override
-    public OrderInfo getPriceTotal(OrderInfo orderInfo) {
+    public OrderInfo getPriceTotal(OrderInfo orderInfo) throws FebsException {
         // 用户信息
         UserInfo userInfo = userInfoService.getOne(Wrappers.<UserInfo>lambdaQuery().eq(UserInfo::getUserId, orderInfo.getUserId()));
 
@@ -80,16 +82,53 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         // 获取送货地址
         AddressInfo endAddressInfo = addressInfoService.getById(orderInfo.getEndAddressId());
 
+        // 获取价格规则
+        List<PriceRules> priceRulesList = new ArrayList<>();
+        if (CollectionUtil.isEmpty(priceRulesList)) {
+            throw new FebsException("未设置价格规则");
+        }
+
+        // 距离规则
+        List<PriceRules> distancePrice = priceRulesList.stream().filter(e -> "1".equals(e.getType())).collect(Collectors.toList());
+        // 重量规则
+        List<PriceRules> weightPrice = priceRulesList.stream().filter(e -> "2".equals(e.getType())).collect(Collectors.toList());
+
         // 计算公里数与配送费用
         double distance = LocationUtils.getDistance(startAddressInfo.getLongitude().doubleValue(), startAddressInfo.getLatitude().doubleValue(), endAddressInfo.getLongitude().doubleValue(), endAddressInfo.getLatitude().doubleValue());
         orderInfo.setKilometre(NumberUtil.round(NumberUtil.div(new BigDecimal(distance), 1000), 2));
+        for (PriceRules priceRules : distancePrice) {
+            if (priceRules.getMinValue().compareTo(BigDecimal.valueOf(distance)) <= 0  && priceRules.getMaxValue().compareTo(BigDecimal.valueOf(distance)) > 0) {
+                orderInfo.setDistributionPrice(NumberUtil.mul(orderInfo.getKilometre(), priceRules.getUnitPrice()));
+                break;
+            }
+        }
+
+        // 货物价格
+        for (PriceRules priceRules : weightPrice) {
+            if (priceRules.getMinValue().compareTo(orderInfo.getWeight()) <= 0 && priceRules.getMaxValue().compareTo(orderInfo.getWeight()) > 0) {
+                orderInfo.setWeightPrice(NumberUtil.mul(orderInfo.getWeight(), priceRules.getUnitPrice()));
+                break;
+            }
+        }
 
         // 基础价格30米
         orderInfo.setOrderPrice(new BigDecimal(30));
-        // 每公里两米
-        orderInfo.setDistributionPrice(NumberUtil.mul(orderInfo.getKilometre(), 5));
-        orderInfo.setOrderPrice(NumberUtil.add(orderInfo.getOrderPrice(), orderInfo.getDistributionPrice()));
+
+        orderInfo.setOrderPrice(NumberUtil.add(orderInfo.getOrderPrice(), orderInfo.getDistributionPrice(), orderInfo.getWeightPrice()));
         orderInfo.setAfterOrderPrice(orderInfo.getOrderPrice());
+
+        // 是否有优惠券
+        if (orderInfo.getDiscountId() != null) {
+            DiscountInfo discountInfo = discountInfoService.getById(orderInfo.getDiscountId());
+            // 满减
+            if ("2".equals(discountInfo.getType())) {
+                orderInfo.setAfterOrderPrice(NumberUtil.sub(orderInfo.getAfterOrderPrice(), discountInfo.getDiscountPrice()));
+            }
+            // 折扣
+            if ("1".equals(discountInfo.getType()) && orderInfo.getOrderPrice().compareTo(discountInfo.getThreshold()) >= 0) {
+                orderInfo.setAfterOrderPrice(NumberUtil.mul(orderInfo.getAfterOrderPrice(), discountInfo.getRebate()));
+            }
+        }
 
         // 判断是有可用优惠券
         List<DiscountInfo> discountInfoList = discountInfoService.list(Wrappers.<DiscountInfo>lambdaQuery().eq(DiscountInfo::getUserId, userInfo.getId()).eq(DiscountInfo::getStatus, "0"));

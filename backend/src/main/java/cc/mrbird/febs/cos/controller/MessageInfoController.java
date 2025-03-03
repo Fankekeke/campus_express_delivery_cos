@@ -2,10 +2,10 @@ package cc.mrbird.febs.cos.controller;
 
 
 import cc.mrbird.febs.common.utils.R;
-import cc.mrbird.febs.cos.entity.MerchantInfo;
 import cc.mrbird.febs.cos.entity.MessageInfo;
-import cc.mrbird.febs.cos.service.IMerchantInfoService;
+import cc.mrbird.febs.cos.entity.UserInfo;
 import cc.mrbird.febs.cos.service.IMessageInfoService;
+import cc.mrbird.febs.cos.service.IUserInfoService;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -26,7 +26,7 @@ public class MessageInfoController {
 
     private final IMessageInfoService messageInfoService;
 
-    private final IMerchantInfoService merchantInfoService;
+    private final IUserInfoService userInfoService;
 
     /**
      * 分页获取消息信息
@@ -73,8 +73,8 @@ public class MessageInfoController {
      */
     @GetMapping("/getMessageDetail")
     public R getMessageDetail(@RequestParam(value = "takeUser") Integer takeUser, @RequestParam(value = "sendUser") Integer sendUser, @RequestParam(value = "userId") Integer userId) {
-        MerchantInfo merchantInfo = merchantInfoService.getOne(Wrappers.<MerchantInfo>lambdaQuery().eq(MerchantInfo::getUserId, userId));
-        if (takeUser.equals(merchantInfo.getUserId())) {
+        UserInfo userInfo = userInfoService.getById(userId);
+        if (takeUser.equals(userInfo.getId())) {
             messageInfoService.update(Wrappers.<MessageInfo>lambdaUpdate().set(MessageInfo::getTaskStatus, 1)
                     .eq(MessageInfo::getTakeUser, takeUser).eq(MessageInfo::getSendUser, sendUser));
         } else {
@@ -92,8 +92,8 @@ public class MessageInfoController {
      */
     @GetMapping("/messageListById")
     public R messageListById(@RequestParam Integer userId) {
-        MerchantInfo merchantInfo = merchantInfoService.getOne(Wrappers.<MerchantInfo>lambdaQuery().eq(MerchantInfo::getUserId, userId));
-        return R.ok(messageInfoService.messageListById(merchantInfo.getUserInfoId()));
+        UserInfo userInfo = userInfoService.getById(userId);
+        return R.ok(messageInfoService.messageListById(userInfo.getId()));
     }
 
     /**

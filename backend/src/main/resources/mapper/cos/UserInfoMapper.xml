@@ -15,6 +15,7 @@
         area,
         address,
         user_id,
+        type,
         create_date,
         images,
         integral

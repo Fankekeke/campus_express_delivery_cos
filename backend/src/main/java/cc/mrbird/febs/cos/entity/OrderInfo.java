@@ -136,6 +136,11 @@ public class OrderInfo implements Serializable {
     private BigDecimal distributionPrice;
 
     /**
+     * 货物价格
+     */
+    private BigDecimal weightPrice;
+
+    /**
      * 订单价格
      */
     private BigDecimal orderPrice;

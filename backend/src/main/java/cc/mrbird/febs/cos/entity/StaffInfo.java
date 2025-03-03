@@ -67,7 +67,7 @@ public class StaffInfo implements Serializable {
     /**
      * 所属账户
      */
-    private Long userId;
+    private Integer userId;
 
     /**
      * 余额
