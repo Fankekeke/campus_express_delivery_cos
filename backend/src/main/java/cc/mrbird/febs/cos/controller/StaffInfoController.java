@@ -2,8 +2,10 @@ package cc.mrbird.febs.cos.controller;
 
 
 import cc.mrbird.febs.common.utils.R;
+import cc.mrbird.febs.cos.entity.AuditInfo;
 import cc.mrbird.febs.cos.entity.OrderInfo;
 import cc.mrbird.febs.cos.entity.StaffInfo;
+import cc.mrbird.febs.cos.entity.UserInfo;
 import cc.mrbird.febs.cos.service.IOrderInfoService;
 import cc.mrbird.febs.cos.service.IStaffInfoService;
 import cc.mrbird.febs.cos.service.IUserInfoService;
@@ -32,6 +34,8 @@ public class StaffInfoController {
 
     private final IOrderInfoService orderInfoService;
 
+    private final IUserInfoService userInfoService1;
+
     private final UserService userInfoService;
 
     /**
@@ -44,6 +48,27 @@ public class StaffInfoController {
     @GetMapping("/page")
     public R page(Page<StaffInfo> page, StaffInfo staffInfo) {
         return R.ok(staffInfoService.selectStaffPage(page, staffInfo));
+    }
+
+    /**
+     * 更新员工上下线状态
+     *
+     * @param staffId 员工ID
+     * @param status  上下线状态
+     * @return 结果
+     */
+    @GetMapping("/onPutFlag")
+    public R onPutFlag(Integer staffId, Integer status) {
+        StaffInfo staffInfo = staffInfoService.getById(staffId);
+        staffInfo.setStatus(status);
+        staffInfoService.updateById(staffInfo);
+        // 更新用户类型
+        if (status == 1) {
+            userInfoService1.update(Wrappers.<UserInfo>lambdaUpdate().set(UserInfo::getType, 2));
+        } else {
+            userInfoService1.update(Wrappers.<UserInfo>lambdaUpdate().set(UserInfo::getType, 1));
+        }
+        return R.ok();
     }
 
     /**

@@ -23,6 +23,14 @@ public interface IUserInfoService extends IService<UserInfo> {
     IPage<LinkedHashMap<String, Object>> selectUserPage(Page<UserInfo> page, UserInfo userInfo);
 
     /**
+     * 编辑用户信息
+     *
+     * @param userInfo 用户信息
+     * @return 结果
+     */
+    boolean editUserInfo(UserInfo userInfo);
+
+    /**
      * 根据用户ID用户信息及订单
      *
      * @param userId 用户ID

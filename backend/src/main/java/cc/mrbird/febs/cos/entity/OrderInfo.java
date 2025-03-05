@@ -183,4 +183,7 @@ public class OrderInfo implements Serializable {
 
     @TableField(exist = false)
     private List<DiscountInfo> discountInfos;
+
+    @TableField(exist = false)
+    private BigDecimal staffKilometre;
 }

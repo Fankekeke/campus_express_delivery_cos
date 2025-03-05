@@ -97,7 +97,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         double distance = LocationUtils.getDistance(startAddressInfo.getLongitude().doubleValue(), startAddressInfo.getLatitude().doubleValue(), endAddressInfo.getLongitude().doubleValue(), endAddressInfo.getLatitude().doubleValue());
         orderInfo.setKilometre(NumberUtil.round(NumberUtil.div(new BigDecimal(distance), 1000), 2));
         for (PriceRules priceRules : distancePrice) {
-            if (priceRules.getMinValue().compareTo(BigDecimal.valueOf(distance)) <= 0  && priceRules.getMaxValue().compareTo(BigDecimal.valueOf(distance)) > 0) {
+            if (priceRules.getMinValue().compareTo(BigDecimal.valueOf(distance)) <= 0 && priceRules.getMaxValue().compareTo(BigDecimal.valueOf(distance)) > 0) {
                 orderInfo.setDistributionPrice(NumberUtil.mul(orderInfo.getKilometre(), priceRules.getUnitPrice()));
                 break;
             }
@@ -300,7 +300,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         // 订单价格
         staffIncome.setIncome(NumberUtil.mul(new BigDecimal(30), 0.8));
         staffIncome.setDeliveryPrice(NumberUtil.mul(order.getDistributionPrice(), 0.8));
-        staffIncome.setTotalPrice(NumberUtil.add(staffIncome.getIncome(), staffIncome.getDeliveryPrice()));
+        staffIncome.setTotalPrice(NumberUtil.mul(order.getOrderPrice(), 0.8));
         staffIncomeService.save(staffIncome);
 
         // 更新员工收益
@@ -551,6 +551,60 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         result.put("bulletinInfoList", bulletinInfoService.list(Wrappers.<BulletinInfo>lambdaQuery().eq(BulletinInfo::getRackUp, 1)));
 
         return result;
+    }
+
+    /**
+     * 员工获取推荐订单
+     *
+     * @param longitude 经度
+     * @param latitude  纬度
+     * @param userId    员工ID
+     * @return 结果
+     */
+    @Override
+    public List<LinkedHashMap<String, Object>> queryOrderRecommend(BigDecimal longitude, BigDecimal latitude, Integer userId) {
+        // 获取员工信息
+        StaffInfo staffInfo = staffInfoService.getOne(Wrappers.<StaffInfo>lambdaQuery().eq(StaffInfo::getUserId, userId));
+        if (staffInfo != null) {
+            return Collections.emptyList();
+        }
+
+        // 获取所有未接单订单
+        List<OrderInfo> orderInfoList = this.list(Wrappers.<OrderInfo>lambdaQuery().eq(OrderInfo::getStatus, "1").ne(OrderInfo::getUserId, userId));
+        if (CollectionUtil.isEmpty(orderInfoList)) {
+            return Collections.emptyList();
+        }
+
+        // 获取所有货物地址
+        List<Integer> addessIdList = orderInfoList.stream().map(OrderInfo::getStartAddressId).collect(Collectors.toList());
+        List<AddressInfo> addressInfoList = addressInfoService.list(Wrappers.<AddressInfo>lambdaQuery().in(AddressInfo::getId, addessIdList));
+        Map<Integer, AddressInfo> addressMap = addressInfoList.stream().collect(Collectors.toMap(AddressInfo::getId, e -> e));
+
+        List<Integer> orderIdList = orderInfoList.stream().map(OrderInfo::getId).collect(Collectors.toList());
+        List<LinkedHashMap<String, Object>> resultList = baseMapper.queryOrderByIds(orderIdList);
+        // 计算员工与货物地址之间的距离
+        for (LinkedHashMap<String, Object> orderInfo : resultList) {
+            AddressInfo startAddressInfo = addressMap.get(orderInfo.get("startAddressId").toString());
+            if (startAddressInfo == null) {
+                continue;
+            }
+            // 计算距离
+            double distance = LocationUtils.getDistance(startAddressInfo.getLongitude().doubleValue(), startAddressInfo.getLatitude().doubleValue(), longitude.doubleValue(), latitude.doubleValue());
+            orderInfo.put("staffKilometre", BigDecimal.valueOf(distance));
+        }
+        resultList.sort(Comparator.comparing((Map<String, Object> h) -> ((double) h.get("staffKilometre"))).thenComparing((Map<String, Object> h) -> ((String) h.get("userSex"))));
+        return resultList;
+    }
+
+    /**
+     * 员工获取订单信息
+     *
+     * @param staffId 员工ID
+     * @return 结果
+     */
+    @Override
+    public List<LinkedHashMap<String, Object>> queryOrderByStaff(Integer staffId) {
+        return baseMapper.queryOrderByStaff(staffId);
     }
 
     /**

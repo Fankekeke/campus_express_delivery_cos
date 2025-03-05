@@ -32,9 +32,14 @@
         oi.after_order_price,
         oi.integral,
         ui.name as userName,
+        ui.sex as userSex,
         ui.images as userImages,
         ei.id as evaluateId,
-        ui.phone
+        ui.phone,
+        si.name as staffName,
+        si.sex as staffSex,
+        si.images as staffImages,
+        si.phone as staffPhone
         from
         order_info oi
         left join user_info ui on (ui.id = oi.user_id)
@@ -62,6 +67,107 @@
         <if test="orderInfo.staffFlag != null and orderInfo.staffFlag != ''">
             AND oi.status = '1'
         </if>
+        order by oi.create_date desc
+    </select>
+
+    <!-- 根据订单ID查询订单信息 -->
+    <select id="queryOrderByIds" resultType="java.util.LinkedHashMap">
+        select
+        oi.id,
+        oi.code,
+        oi.order_name,
+        oi.user_id,
+        oi.total,
+        oi.create_date,
+        oi.remark,
+        oi.status,
+        oi.staff_ids,
+        oi.pay_date,
+        oi.goods_type,
+        oi.images,
+        oi.weight,
+        oi.height,
+        oi.width,
+        oi.start_address_id,
+        oi.end_address_id,
+        oi.delivery_date,
+        oi.logistics_info,
+        oi.finish_date,
+        oi.kilometre,
+        oi.distribution_price,
+        oi.order_price,
+        oi.discount_id,
+        oi.after_order_price,
+        oi.integral,
+        ui.name as userName,
+        ui.sex as userSex,
+        ui.images as userImages,
+        ei.id as evaluateId,
+        ui.phone,
+        si.name as staffName,
+        si.sex as staffSex,
+        si.images as staffImages,
+        si.phone as staffPhone
+        from
+        order_info oi
+        left join user_info ui on (ui.id = oi.user_id)
+        left join staff_info si on (si.id = oi.staff_ids)
+        left join evaluate_info ei on (ei.order_id = oi.id)
+        where 1 = 1
+        <if test="orderIdList != null and orderIdList.size() != 0">
+            AND oi.id IN
+            <foreach collection="orderIdList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        order by oi.create_date desc
+    </select>
+
+    <!-- 查询订单信息 -->
+    <select id="queryOrderByStaff" resultType="java.util.LinkedHashMap">
+        select
+        oi.id,
+        oi.code,
+        oi.order_name,
+        oi.user_id,
+        oi.total,
+        oi.create_date,
+        oi.remark,
+        oi.status,
+        oi.staff_ids,
+        oi.pay_date,
+        oi.goods_type,
+        oi.images,
+        oi.weight,
+        oi.height,
+        oi.width,
+        oi.start_address_id,
+        oi.end_address_id,
+        oi.delivery_date,
+        oi.logistics_info,
+        oi.finish_date,
+        oi.kilometre,
+        oi.distribution_price,
+        oi.order_price,
+        oi.discount_id,
+        oi.after_order_price,
+        oi.integral,
+        ui.name as userName,
+        ui.sex as userSex,
+        ui.images as userImages,
+        ei.id as evaluateId,
+        ui.phone,
+        si.name as staffName,
+        si.sex as staffSex,
+        si.images as staffImages,
+        si.phone as staffPhone
+        from
+        order_info oi
+        left join user_info ui on (ui.id = oi.user_id)
+        left join staff_info si on (si.id = oi.staff_ids)
+        left join evaluate_info ei on (ei.order_id = oi.id)
+        where 1 = 1
+        AND si.user_id = #{staffId}
         order by oi.create_date desc
     </select>
 

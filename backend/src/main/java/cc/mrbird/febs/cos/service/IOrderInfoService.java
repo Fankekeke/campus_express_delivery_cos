@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -123,6 +124,24 @@ public interface IOrderInfoService extends IService<OrderInfo> {
      * @return 结果
      */
     LinkedHashMap<String, Object> selectHomeDataByMerchant(Integer userId);
+
+    /**
+     * 员工获取推荐订单
+     *
+     * @param longitude 经度
+     * @param latitude  纬度
+     * @param userId   员工ID
+     * @return 结果
+     */
+    List<LinkedHashMap<String, Object>> queryOrderRecommend(BigDecimal longitude, BigDecimal latitude, Integer userId);
+
+    /**
+     * 员工获取订单信息
+     *
+     * @param staffId 员工ID
+     * @return 结果
+     */
+    List<LinkedHashMap<String, Object>> queryOrderByStaff(Integer staffId);
 
     /**
      * 管理员获取主页统计数据
