@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.io.Serializable;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -37,6 +38,7 @@ public class UserInfo implements Serializable {
      * 用户姓名
      */
     private String name;
+    private String sex;
 
     /**
      * 邮箱地址
@@ -92,4 +94,13 @@ public class UserInfo implements Serializable {
      * 用户类型(1.用户 2.配送员)
      */
     private String type;
+
+    /**
+     * OPENID
+     */
+    private String openId;
+    private String avatar;
+
+    @TableField(exist = false)
+    private String userName;
 }

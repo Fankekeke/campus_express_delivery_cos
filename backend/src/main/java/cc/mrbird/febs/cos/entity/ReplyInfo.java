@@ -1,6 +1,7 @@
 package cc.mrbird.febs.cos.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -42,6 +43,12 @@ public class ReplyInfo implements Serializable {
      * 发送时间
      */
     private String createDate;
+
+    @TableField(exist = false)
+    private String username;
+
+    @TableField(exist = false)
+    private String title;
 
 
 }

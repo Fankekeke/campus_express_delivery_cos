@@ -39,6 +39,16 @@ public class OrderInfoController {
     }
 
     /**
+     * 接单订单列表
+     *
+     * @return 结果
+     */
+    @GetMapping("/notCheckList")
+    public R notCheckList() {
+        return R.ok(orderInfoService.notCheckList());
+    }
+
+    /**
      * 员工接单
      *
      * @param orderId 订单ID
@@ -57,7 +67,7 @@ public class OrderInfoController {
      * @return 结果
      */
     @PostMapping("/getPriceTotal")
-    public R getPriceTotal(OrderInfo orderInfo) {
+    public R getPriceTotal(OrderInfo orderInfo) throws FebsException {
         return R.ok(orderInfoService.getPriceTotal(orderInfo));
     }
 

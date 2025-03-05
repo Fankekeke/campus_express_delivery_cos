@@ -58,7 +58,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
             StaffInfo staffInfo = staffInfoService.getOne(Wrappers.<StaffInfo>lambdaQuery().eq(StaffInfo::getUserId, userInfo.getId()));
             staffInfo.setName(userInfo.getName());
             staffInfo.setPhone(userInfo.getPhone());
-            staffInfo.setSex(userInfo.getSex());
+            staffInfo.setSex(Integer.valueOf(userInfo.getSex()));
             staffInfoService.updateById(staffInfo);
         }
         return this.updateById(userInfo);

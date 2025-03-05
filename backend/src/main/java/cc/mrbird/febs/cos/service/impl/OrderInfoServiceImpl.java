@@ -66,6 +66,27 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     }
 
     /**
+     * 未审核订单列表
+     *
+     * @return 结果
+     */
+    @Override
+    public List<LinkedHashMap<String, Object>> notCheckList() {
+        return baseMapper.notCheckList();
+    }
+
+    /**
+     * 根据用户ID查询订单信息
+     *
+     * @param userId 用户ID
+     * @return 结果
+     */
+    @Override
+    public List<LinkedHashMap<String, Object>> queryOrderByUserId(Integer userId) {
+        return baseMapper.queryOrderByUserId(userId);
+    }
+
+    /**
      * 获取订单付款信息
      *
      * @param orderInfo 订单信息

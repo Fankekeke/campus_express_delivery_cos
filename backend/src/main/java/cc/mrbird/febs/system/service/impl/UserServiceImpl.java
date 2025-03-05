@@ -247,7 +247,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setDescription("注册员工");
         this.save(user);
 
-        staffInfo.setUserId(user.getUserId());
+        staffInfo.setUserId(Math.toIntExact(user.getUserId()));
         staffInfoService.save(staffInfo);
 
         UserRole ur = new UserRole();

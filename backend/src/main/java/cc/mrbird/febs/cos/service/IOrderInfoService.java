@@ -28,6 +28,21 @@ public interface IOrderInfoService extends IService<OrderInfo> {
     IPage<LinkedHashMap<String, Object>> selectOrderPage(Page<OrderInfo> page, OrderInfo orderInfo);
 
     /**
+     * 未审核订单列表
+     *
+     * @return 结果
+     */
+    List<LinkedHashMap<String, Object>>notCheckList();
+
+    /**
+     * 根据用户ID查询订单信息
+     *
+     * @param userId 用户ID
+     * @return 结果
+     */
+    List<LinkedHashMap<String, Object>> queryOrderByUserId(Integer userId);
+
+    /**
      * 获取订单付款信息
      *
      * @param orderInfo 订单信息

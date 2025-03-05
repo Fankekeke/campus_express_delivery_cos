@@ -15,14 +15,6 @@
             </a-col>
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="所属商家"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}">
-                <a-input v-model="queryParams.merchantName"/>
-              </a-form-item>
-            </a-col>
-            <a-col :md="6" :sm="24">
-              <a-form-item
                 label="订单编号"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}">
@@ -147,17 +139,32 @@ export default {
         ellipsis: true,
         dataIndex: 'userPhone'
       }, {
-        title: '搬家公司',
+        title: '员工名称',
         ellipsis: true,
-        dataIndex: 'merchantName'
+        dataIndex: 'staffName'
       }, {
-        title: '负责人',
-        ellipsis: true,
-        dataIndex: 'principal'
+        title: '员工头像',
+        dataIndex: 'staffImages',
+        customRender: (text, record, index) => {
+          if (!record.staffImages) return <a-avatar shape="square" icon="user" />
+          return <a-popover>
+            <template slot="content">
+              <a-avatar shape="square" size={132} icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.staffImages } />
+            </template>
+            <a-avatar shape="square" icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.staffImages } />
+          </a-popover>
+        }
       }, {
-        title: '公司联系方式',
+        title: '员工联系方式',
         ellipsis: true,
-        dataIndex: 'merchantPhone'
+        dataIndex: 'staffPhone',
+        customRender: (text, row, index) => {
+          if (text !== null) {
+            return text
+          } else {
+            return '- -'
+          }
+        }
       }, {
         title: '投诉时间',
         ellipsis: true,

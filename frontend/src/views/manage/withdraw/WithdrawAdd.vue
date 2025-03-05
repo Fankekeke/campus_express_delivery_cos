@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model="show" title="新增提现记录" @cancel="onClose" :width="800">
+  <a-modal v-model="show" title="新增提现记录" @cancel="onClose" :width="700">
     <template slot="footer">
       <a-button key="back" @click="onClose">
         取消

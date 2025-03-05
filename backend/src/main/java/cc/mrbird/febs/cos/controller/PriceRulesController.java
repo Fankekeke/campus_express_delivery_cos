@@ -4,11 +4,13 @@ package cc.mrbird.febs.cos.controller;
 import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.cos.entity.PriceRules;
 import cc.mrbird.febs.cos.service.IPriceRulesService;
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -62,6 +64,8 @@ public class PriceRulesController {
      */
     @PostMapping
     public R save(PriceRules priceRules) {
+        priceRules.setCode("PR-" + System.currentTimeMillis());
+        priceRules.setCreateDate(DateUtil.formatDateTime(new Date()));
         return R.ok(priceRulesService.save(priceRules));
     }
 

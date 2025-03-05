@@ -12,12 +12,15 @@
         phone,
         province,
         city,
+        sex,
         area,
         address,
         user_id,
         type,
         create_date,
         images,
+        avatar,
+        open_id,
         integral
         from
         user_info

@@ -105,7 +105,7 @@ export default {
           }
         }
       }, {
-        title: '公司名称',
+        title: '员工名称',
         dataIndex: 'takeUserName',
         customRender: (text, row, index) => {
           if (text !== null) {
@@ -127,7 +127,7 @@ export default {
           </a-popover>
         }
       }, {
-        title: '公司头像',
+        title: '员工头像',
         dataIndex: 'takeUserAvatar',
         customRender: (text, record, index) => {
           if (!record.takeUserAvatar) return <a-avatar shape="square" icon="user" />

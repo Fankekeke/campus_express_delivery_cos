@@ -70,6 +70,52 @@
         order by oi.create_date desc
     </select>
 
+    <!-- 查询未审核订单 -->
+    <select id="notCheckList" resultType="java.util.LinkedHashMap">
+        select oi.id,
+               oi.code,
+               oi.order_name,
+               oi.user_id,
+               oi.total,
+               oi.create_date,
+               oi.remark,
+               oi.status,
+               oi.staff_ids,
+               oi.pay_date,
+               oi.goods_type,
+               oi.images,
+               oi.weight,
+               oi.height,
+               oi.width,
+               oi.start_address_id,
+               oi.end_address_id,
+               oi.delivery_date,
+               oi.logistics_info,
+               oi.finish_date,
+               oi.kilometre,
+               oi.distribution_price,
+               oi.order_price,
+               oi.discount_id,
+               oi.after_order_price,
+               oi.integral,
+               ui.name   as userName,
+               ui.sex    as userSex,
+               ui.images as userImages,
+               ei.id     as evaluateId,
+               ui.phone,
+               si.name   as staffName,
+               si.sex    as staffSex,
+               si.images as staffImages,
+               si.phone  as staffPhone
+        from order_info oi
+                 left join user_info ui on (ui.id = oi.user_id)
+                 left join staff_info si on (si.id = oi.staff_ids)
+                 left join evaluate_info ei on (ei.order_id = oi.id)
+        where 1 = 1
+          AND oi.status = '1'
+        order by oi.create_date desc
+    </select>
+
     <!-- 根据订单ID查询订单信息 -->
     <select id="queryOrderByIds" resultType="java.util.LinkedHashMap">
         select
@@ -168,6 +214,51 @@
         left join evaluate_info ei on (ei.order_id = oi.id)
         where 1 = 1
         AND si.user_id = #{staffId}
+        order by oi.create_date desc
+    </select>
+
+    <!-- 根据用户ID查询订单信息 -->
+    <select id="queryOrderByUserId" resultType="java.util.LinkedHashMap">
+        select
+        oi.id,
+        oi.code,
+        oi.order_name,
+        oi.user_id,
+        oi.total,
+        oi.create_date,
+        oi.remark,
+        oi.status,
+        oi.staff_ids,
+        oi.pay_date,
+        oi.goods_type,
+        oi.images,
+        oi.weight,
+        oi.height,
+        oi.width,
+        oi.start_address_id,
+        oi.end_address_id,
+        oi.delivery_date,
+        oi.logistics_info,
+        oi.finish_date,
+        oi.kilometre,
+        oi.distribution_price,
+        oi.order_price,
+        oi.discount_id,
+        oi.after_order_price,
+        oi.integral,
+        ui.name as userName,
+        ui.images as userImages,
+        ei.id as evaluateId,
+        ui.phone
+        from
+        order_info oi
+        left join user_info ui on (ui.id = oi.user_id)
+        left join staff_info si on (si.id = oi.staff_ids)
+        left join evaluate_info ei on (ei.order_id = oi.id)
+        where 1 = 1
+        <if test="userId != null">
+            AND ui.user_id = #{userId}
+        </if>
         order by oi.create_date desc
     </select>
 

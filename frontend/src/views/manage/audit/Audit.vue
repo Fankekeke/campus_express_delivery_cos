@@ -7,7 +7,7 @@
           <div :class="advanced ? null: 'fold'">
             <a-col :md="6" :sm="24">
               <a-form-item
-                label=公司名称
+                label="员工名称"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}">
                 <a-input v-model="queryParams.userName"/>
@@ -123,25 +123,25 @@ export default {
     }),
     columns () {
       return [{
-        title: '搬家公司',
+        title: '用户名称',
         ellipsis: true,
-        dataIndex: 'merchantName'
+        dataIndex: 'userName'
       }, {
         title: '图片',
-        dataIndex: 'images',
+        dataIndex: 'userImages',
         customRender: (text, record, index) => {
-          if (!record.images) return <a-avatar shape="square" icon="user" />
+          if (!record.userImages) return <a-avatar shape="square" icon="user" />
           return <a-popover>
             <template slot="content">
-              <a-avatar shape="square" size={132} icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images } />
+              <a-avatar shape="square" size={132} icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.userImages } />
             </template>
-            <a-avatar shape="square" icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images } />
+            <a-avatar shape="square" icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.userImages } />
           </a-popover>
         }
       }, {
-        title: '负责人',
+        title: '用户编号',
         ellipsis: true,
-        dataIndex: 'principal'
+        dataIndex: 'userCode'
       }, {
         title: '申请时间',
         ellipsis: true,

@@ -24,6 +24,21 @@ public interface OrderInfoMapper extends BaseMapper<OrderInfo> {
     IPage<LinkedHashMap<String, Object>> selectOrderPage(Page<OrderInfo> page, @Param("orderInfo") OrderInfo orderInfo);
 
     /**
+     * 查询未审核订单
+     *
+     * @return 结果
+     */
+    List<LinkedHashMap<String, Object>> notCheckList();
+
+    /**
+     * 根据用户ID查询订单信息
+     *
+     * @param userId 用户ID
+     * @return 结果
+     */
+    List<LinkedHashMap<String, Object>> queryOrderByUserId(@Param("userId") Integer userId);
+
+    /**
      * 根据订单ID查询订单信息
      *
      * @param orderIds 订单ID集合

@@ -10,8 +10,8 @@ module.exports = {
   },
   extends: [
     // https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention
-    // consider switching to `plugin:vue/strongly-recommended` or `plugin:vue/recommended` for stricter rules.
-    'plugin:vue/essential', 
+    // consider switching to `plugin:vue/strongly-recommended` or `plugin:vue/recommended` for stricter rule.
+    'plugin:vue/essential',
     // https://github.com/standard/standard/blob/master/docs/RULES-en.md
     'standard'
   ],
@@ -19,7 +19,7 @@ module.exports = {
   plugins: [
     'vue'
   ],
-  // add your custom rules here
+  // add your custom rule here
   rules: {
     // allow async-await
     'generator-star-spacing': 'off',
