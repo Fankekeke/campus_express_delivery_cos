@@ -59,6 +59,8 @@ public class WebController {
 
     private final IPaymentRecordService paymentRecordService;
 
+    private final IAddressInfoService addressInfoService;
+
 
     /**
      * File 转MultipartFile
@@ -289,6 +291,17 @@ public class WebController {
     }
 
     /**
+     * 根据用户ID获取地址信息
+     *
+     * @param userId
+     * @return 结果
+     */
+    @GetMapping("/addressInfoByUser")
+    public R addressInfoByUser(@RequestParam Integer userId) {
+        return R.ok(addressInfoService.list(Wrappers.<AddressInfo>lambdaQuery().eq(AddressInfo::getUserId, userId)));
+    }
+
+    /**
      * 查询用户投诉信息
      *
      * @param userId 用户ID
@@ -297,6 +310,68 @@ public class WebController {
     @GetMapping("/queryComplaintListById")
     public R queryComplaintListById(@RequestParam Integer userId) {
         return R.ok(complaintInfoService.queryComplaintList(userId));
+    }
+
+    /**
+     * 用户添加收货地址
+     *
+     * @param addressInfo
+     * @return 结果
+     */
+    @PostMapping("/addressAdd")
+    public R addressAdd(@RequestBody AddressInfo addressInfo) {
+        addressInfo.setCode("ADS-" + System.currentTimeMillis());
+        if (addressInfo.getDefaultAddress() == 1) {
+            addressInfoService.update(Wrappers.<AddressInfo>lambdaUpdate().set(AddressInfo::getDefaultAddress, 0).eq(AddressInfo::getUserId, addressInfo.getUserId()));
+        }
+        addressInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
+        return R.ok(addressInfoService.save(addressInfo));
+    }
+
+    /**
+     * 用户编辑收货地址
+     *
+     * @param addressInfo
+     * @return 结果
+     */
+    @PostMapping("/addressEdit")
+    public R addressEdit(@RequestBody AddressInfo addressInfo) {
+        if (addressInfo.getDefaultAddress() == 1) {
+            addressInfoService.update(Wrappers.<AddressInfo>lambdaUpdate().set(AddressInfo::getDefaultAddress, 0).eq(AddressInfo::getUserId, addressInfo.getUserId()));
+        }
+        return R.ok(addressInfoService.updateById(addressInfo));
+    }
+
+    /**
+     * 用户删除收获地址
+     *
+     * @param addressId
+     * @return 结果
+     */
+    @GetMapping("/address/delete")
+    public R addressRemove(@RequestParam Integer addressId) {
+        return R.ok(addressInfoService.removeById(addressId));
+    }
+
+    /**
+     * 根据ID获取地址信息
+     *
+     * @param addressId
+     * @return 结果
+     */
+    @GetMapping("/addressInfoById")
+    public R addressInfoById(@RequestParam Integer addressId) {
+        return R.ok(addressInfoService.getById(addressId));
+    }
+
+    /**
+     * 获取用户默认地址
+     *
+     * @return 结果
+     */
+    @GetMapping("/selDefaultAddress")
+    public R selDefaultAddress(@RequestParam Integer userId) {
+        return R.ok(addressInfoService.getOne(Wrappers.<AddressInfo>lambdaQuery().eq(AddressInfo::getUserId, userId).eq(AddressInfo::getDefaultAddress, 1)));
     }
 
     /**

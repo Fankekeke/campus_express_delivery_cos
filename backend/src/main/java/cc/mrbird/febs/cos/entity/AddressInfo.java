@@ -89,6 +89,11 @@ public class AddressInfo implements Serializable {
      */
     private String houseNumber;
 
+    /**
+     * 默认地址
+     */
+    private Integer defaultAddress;
+
     @TableField(exist = false)
     private String name;
 
