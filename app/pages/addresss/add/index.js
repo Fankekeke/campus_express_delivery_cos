@@ -9,6 +9,13 @@ Page({
 		region: ['重庆市', '重庆市', '江北区'],
 		name: '',
 		phone: '',
+		province: '',
+		city: '',
+		area: '',
+		houseNumber: '',
+		latitude: '',
+		longitude: '',
+		lnglat: '',
 		address: '',
 		defaultAddress: 1
 	},
@@ -28,11 +35,38 @@ Page({
 			region: e.detail.value
 		})
 	},
+	getProvinceValue(e) {
+		this.setData({ province: e.detail.value })
+	},
+	getCityValue(e) {
+		this.setData({ city: e.detail.value })
+	},
+	getAreaValue(e) {
+		this.setData({ area: e.detail.value })
+	},
+	getHouseNumberValue(e) {
+		this.setData({ houseNumber: e.detail.value })
+	},
+	getLnglatValue() {
+		const _this = this;
+		wx.chooseLocation({
+			success(res) {
+				_this.setData({
+					latitude: res.latitude,
+					longitude: res.longitude,
+					lnglat: res.longitude + ', ' + res.latitude
+				})
+			},
+			fail(e) {
+				console.log(e);
+			}
+		})
+	},
 	add() {
 		wx.getStorage({
 			key: 'userInfo',
 			success: (res) => {
-				let data = { name: this.data.name, phone: this.data.phone, address: this.data.address, defaultAddress: this.data.defaultAddress, userId: res.data.id }
+				let data = { contactPerson: this.data.name, contactMethod: this.data.phone, address: this.data.address, defaultAddress: this.data.defaultAddress, userId: res.data.id, province: this.data.province, city: this.data.city, area: this.data.area, houseNumber: this.data.houseNumber, latitude: this.data.latitude, longitude: this.data.longitude }
 				this.addressAdd(data)
 			},
 			fail: res => {

@@ -54,7 +54,7 @@
 
     <view class="cu-form-group">
         <view class='title'>选择详细地址</view>
-        <input placeholder="请填写收货人的详细地址" bindinput='getLnglatValue' value="{{lnglat}}" class='radius' name='input'></input>
+        <input placeholder="请填写收货人的详细地址" bindtap='getLnglatValue' value="{{lnglat}}" class='radius' name='input'></input>
     </view>
 
     <view class="cu-form-group">

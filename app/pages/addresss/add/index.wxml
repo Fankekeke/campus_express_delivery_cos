@@ -33,6 +33,31 @@
     </view>
 
     <view class="cu-form-group">
+        <view class='title'>省份</view>
+        <input placeholder="请填写收货人的省份" bindinput='getProvinceValue' value="{{province}}" class='radius' name='input'></input>
+    </view>
+
+    <view class="cu-form-group">
+        <view class='title'>市区</view>
+        <input placeholder="请填写收货人的市区" bindinput='getCityValue' value="{{city}}" class='radius' name='input'></input>
+    </view>
+
+    <view class="cu-form-group">
+        <view class='title'>区</view>
+        <input placeholder="请填写收货人的区" bindinput='getAreaValue' value="{{area}}" class='radius' name='input'></input>
+    </view>
+
+    <view class="cu-form-group">
+        <view class='title'>门牌号</view>
+        <input placeholder="请填写收货人的门牌号" bindinput='getHouseNumberValue' value="{{houseNumber}}" class='radius' name='input'></input>
+    </view>
+
+    <view class="cu-form-group">
+        <view class='title'>选择详细地址</view>
+        <input placeholder="请填写收货人的详细地址" bindtap='getLnglatValue' value="{{lnglat}}" class='radius' name='input'></input>
+    </view>
+
+    <view class="cu-form-group">
         <view class='title'>设置默认地址</view>
         <switch class='red sm' checked bindchange="switch1Change"></switch>
     </view>

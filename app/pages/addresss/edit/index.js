@@ -35,6 +35,7 @@ Page({
 				houseNumber: r.data.houseNumber,
 				latitude: r.data.latitude,
 				longitude: r.data.longitude,
+				lnglat: r.data.longitude + ', ' + r.data.latitude,
 				defaultAddress: r.data.defaultAddress
 			})
 		})
@@ -68,7 +69,7 @@ Page({
 		wx.getStorage({
 			key: 'userInfo',
 			success: (res) => {
-				let data = { name: this.data.name, phone: this.data.phone, address: this.data.address, defaultAddress: this.data.defaultAddress, userId: res.data.id, id: this.data.addressId }
+				let data = { contactPerson: this.data.name, contactMethod: this.data.phone, address: this.data.address, defaultAddress: this.data.defaultAddress, userId: res.data.id, id: this.data.addressId, province: this.data.province, city: this.data.city, area: this.data.area, houseNumber: this.data.houseNumber, latitude: this.data.latitude, longitude: this.data.longitude }
 				this.addressEdit(data)
 			},
 			fail: res => {
@@ -92,8 +93,20 @@ Page({
 	getHouseNumberValue(e) {
 		this.setData({ houseNumber: e.detail.value })
 	},
-	getLnglatValue(e) {
-		this.setData({ name: e.detail.value })
+	getLnglatValue() {
+		const _this = this;
+		wx.chooseLocation({
+			success(res) {
+				_this.setData({
+					latitude: res.latitude,
+					longitude: res.longitude,
+					lnglat: res.longitude + ', ' + res.latitude
+				})
+			},
+			fail(e) {
+				console.log(e);
+			}
+		})
 	},
 	getNameValue(e) {
 		this.setData({ name: e.detail.value })
