@@ -371,7 +371,7 @@ public class WebController {
      */
     @GetMapping("/selDefaultAddress")
     public R selDefaultAddress(@RequestParam Integer userId) {
-        return R.ok(addressInfoService.getOne(Wrappers.<AddressInfo>lambdaQuery().eq(AddressInfo::getUserId, userId).eq(AddressInfo::getDefaultAddress, 1)));
+        return R.ok(addressInfoService.list(Wrappers.<AddressInfo>lambdaQuery().eq(AddressInfo::getUserId, userId)));
     }
 
     /**

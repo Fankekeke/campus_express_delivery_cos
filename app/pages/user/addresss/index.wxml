@@ -12,7 +12,7 @@
     <view class="cu-list menu bg-white">
         <view class="cu-item" wx:for="{{addressList}}">
             <view class='content'>
-                <view class="text-df">{{ item.contactPerson }} <text>{{ item.contactMethod }}</text> <view class='cu-tag bg-red round' wx:if="{{ item.defaultAddress }}">默认</view></view>
+                <view class="text-df">{{ item.contactPerson }} <text>{{ item.contactMethod }}</text></view>
                 <view class='text-gray text-sm canui-xzwz'>{{ item.address }}</view>
             </view>
             <view class='action'><view class='text-grey icon-write' bindtap='edit' data-addressId='{{ item.id }}'></view></view>

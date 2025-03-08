@@ -14,18 +14,28 @@ Page({
         fileList: [],
         userInfo: null,
         startPoint: {
-            startAddress: '',
-            point: null
-        },
-        endPoint: {
-            endAddress: '',
-            point: null
-        },
+			show: false,
+			id: null,
+			address: '',
+			point: null
+		},
+		endPoint: {
+			show: false,
+			id: null,
+			address: '',
+			point: null
+		},
         vehicle: {
             show: false,
             label: '小型车',
             value: '2',
             options: ['大型车', '中型车', '小型车']
+        },
+        goodsType: {
+            show: false,
+            label: '文件',
+            value: '1',
+            options: [{id: 1, text: '文件'}, {id: 2, text: '食品'}, {id: 3, text: '蛋糕'}, {id: 4, text: '数码'}, {id: 5, text: '证件'}, {id: 6, text: '药品'}, {id: 7, text: '海鲜'}, {id: 8, text: '鲜花'}, {id: 9, text: '服饰'}, {id: 10, text: '其他'}]
         },
         staff: {
             show: false,
@@ -141,30 +151,14 @@ Page({
         console.log(e.currentTarget.dataset.type)
         if (e.currentTarget.dataset.type == 1) {
             this.setData({
-                'vehicle.show': true,
-            })
-        } else if (e.currentTarget.dataset.type == 2) {
-            this.setData({
-                'staff.show': true,
-            })
-        } else if (e.currentTarget.dataset.type == 3) {
-            this.setData({
-                'elevator.show': true,
-            })
-        } else if (e.currentTarget.dataset.type == 4) {
-            this.setData({
-                appointmentTimeShow: true,
-            })
-        } else if (e.currentTarget.dataset.type == 5) {
-            this.setData({
-                'discount.show': true,
+                'goodsType.show': true,
             })
         }
     },
     onClose(e) {
         if (e.currentTarget.dataset.type == 1) {
             this.setData({
-                'vehicle.show': false,
+                'goodsType.show': false,
             })
         } else if (e.currentTarget.dataset.type == 2) {
             this.setData({
@@ -192,9 +186,9 @@ Page({
     onChange(e) {
         if (e.currentTarget.dataset.type == 1) {
             this.setData({
-                'vehicle.label': e.detail.value,
-                'vehicle.value': e.detail.index + 1,
-                'vehicle.show': false
+                'goodsType.label': e.detail.value.text,
+                'goodsType.value': e.detail.value.id,
+                'goodsType.show': false
             })
         } else if (e.currentTarget.dataset.type == 2) {
             this.setData({

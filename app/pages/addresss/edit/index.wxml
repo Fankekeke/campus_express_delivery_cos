@@ -57,10 +57,10 @@
         <input placeholder="请填写收货人的详细地址" bindtap='getLnglatValue' value="{{lnglat}}" class='radius' name='input'></input>
     </view>
 
-    <view class="cu-form-group">
+    <!-- <view class="cu-form-group">
         <view class='title'>设置默认地址</view>
         <switch class='red sm' checked='{{ defaultAddress == 1 ? true : false }}' bindchange="switch1Change"></switch>
-    </view>
+    </view> -->
 
     <view class="cu-form-group margin-top">
         <view class='title text-red light' bindtap='delete'>删除当前收货地址</view>

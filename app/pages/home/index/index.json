@@ -7,6 +7,7 @@
     "van-rate": "../../../dist/rate/index",
     "van-field": "../../../dist/field/index",
     "van-datetime-picker": "../../../dist/datetime-picker/index",
-  "van-calendar": "../../../dist/calendar/index"
+  "van-calendar": "../../../dist/calendar/index",
+  "van-picker": "../../../dist/picker/index"
   }
 }

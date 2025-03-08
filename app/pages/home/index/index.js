@@ -35,7 +35,7 @@ Page({
 		}],
 		Headlines: [{
 			id: 1,
-			title: "配送公司入驻",
+			title: "配送员入驻",
 			type: 1
 		}, {
 			id: 2,
@@ -47,29 +47,76 @@ Page({
 		commodityHot: [],
 		keys: '',
 		videosrc: "http://wxsnsdy.tc.qq.com/105/20210/snsdyvideodownload?filekey=30280201010421301f0201690402534804102ca905ce620b1241b726bc41dcff44e00204012882540400&bizid=1023&hy=SH&fileparam=302c020101042530230204136ffd93020457e3c4ff02024ef202031e8d7f02030f42400204045a320a0201000400",
+		addressList: [],
 		startPoint: {
-			startAddress: '',
+			show: false,
+			id: null,
+			address: '',
 			point: null
 		},
 		endPoint: {
-			endAddress: '',
+			show: false,
+			id: null,
+			address: '',
 			point: null
 		},
+		userInfo: null
 	},
 	onLoad: function () {
-		/*console.log(app.globalData.StatusBar);
-		console.log(app.globalData.CustomBar);*/
-		// wx.getSetting({
-		//     success: res => {
-		//         if (!res.authSetting['scope.userInfo']) {
-		//             wx.redirectTo({
-		//               	url: '/pages/auth/auth'
-		//             })
-		//         }
-		//     }
-		// });
 		this.home()
 	},
+	onShow() {
+    wx.getStorage({
+			key: 'userInfo',
+			success: (res) => {
+				this.setData({
+					userInfo: res.data
+				})
+				this.getUserAddress(res.data.id)
+			},
+			fail: res => {
+
+			}
+		})
+  },
+	getUserAddress(userId) {
+		http.get('selDefaultAddress', {
+			userId
+		}).then((r) => {
+			r.data.forEach(item => {
+				item.text = item.address
+			})
+			this.setData({
+				addressList: r.data
+			})
+		})
+	},
+	onClose(e) {
+		if (e.currentTarget.dataset.type == 1) {
+				this.setData({
+						'startPoint.show': false,
+				})
+		} else if (e.currentTarget.dataset.type == 2) {
+				this.setData({
+						'endPoint.show': false,
+				})
+		}
+},
+onChange(e) {
+		if (e.currentTarget.dataset.type == 1) {
+				this.setData({
+						'startPoint.address': e.detail.value.address,
+						'startPoint.id': e.detail.value.id,
+						'startPoint.show': false
+				})
+		} else if (e.currentTarget.dataset.type == 2) {
+				this.setData({
+						'endPoint.address': e.detail.value.address,
+						'endPoint.id': e.detail.value.id,
+						'endPoint.show': false
+				})
+		}
+},
 	/**
 	 * 选择位置
 	 */
@@ -112,10 +159,23 @@ Page({
 			}
 		})
 	},
+	openPopup(e) {
+		if (e.currentTarget.dataset.type == 1) {
+			this.setData({
+				'startPoint.show': true,
+			})
+		} else if (e.currentTarget.dataset.type == 2) {
+			this.setData({
+				'endPoint.show': true,
+			})
+		}
+	},
 	submit() {
-		if (!this.data.startPoint.startAddress || !this.data.endPoint.endAddress) {
+		console.log(this.data.startPoint)
+		console.log(this.data.endPoint)
+		if (this.data.startPoint.id == null || this.data.endPoint.id == null) {
 			wx.showToast({
-				title: '请选择起始地点和运输地点',
+				title: '请选择地址',
 				icon: 'error',
 				duration: 1000
 			})
@@ -127,7 +187,7 @@ Page({
 		}
 		wx.navigateTo({
 			url: '/pages/scar/order/index?address=' + JSON.stringify(param)
-	});
+		});
 	},
 	timeFormat(time) {
 		var nowTime = new Date();

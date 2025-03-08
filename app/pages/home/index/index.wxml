@@ -47,14 +47,27 @@
 <view class="bg-white solid-bottom">
     <view style="padding: 15px 10px 20px 10px">
         <van-cell-group inset border="{{false}}">
-            <van-cell clickable arrow-direction="left" border="{{false}}" center title="起始地点" label="{{ startPoint.startAddress }}" is-link bindtap="startChooseLocation"/>
-            <van-cell clickable arrow-direction="left" border="{{false}}" center title="运输地点" label="{{ endPoint.endAddress }}" is-link bindtap="endChooseLocation"/>
+            <van-cell clickable arrow-direction="left" border="{{false}}" center title="物品地址"
+                label="{{ startPoint.address }}" is-link data-type="1" bindtap="openPopup" />
+            <van-cell clickable arrow-direction="left" border="{{false}}" center title="收货地址"
+                label="{{ endPoint.address }}" is-link data-type="2" bindtap="openPopup" />
         </van-cell-group>
         <view style="padding: 10px 12px 0 12px">
-            <van-button type="info" size="normal" style="width: 100%" block bind:click="submit">提交预约</van-button>
+            <van-button type="info" size="normal" style="width: 100%" block bind:click="submit" color="#6d07a8">提交预约
+            </van-button>
         </view>
     </view>
 </view>
+
+<van-popup close-on-click-overlay round show="{{ startPoint.show }}" data-type="1" bind:close="onClose" position="bottom">
+    <van-picker columns="{{ addressList }}" data-type="1" bind:cancel="onClose" bind:confirm="onChange"
+        show-toolbar />
+</van-popup>
+
+<van-popup close-on-click-overlay round show="{{ endPoint.show }}" data-type="2" bind:close="onClose" position="bottom">
+    <van-picker columns="{{ addressList }}" data-type="2" bind:cancel="onClose" bind:confirm="onChange"
+        show-toolbar />
+</van-popup>
 
 <!--宫格功能区域-->
 <view class="cu-list margin-top grid col-4 no-border">
@@ -121,13 +134,13 @@
 </view>
 
 <!--设计师-->
-<view class="cu-bar bg-white solid-bottom margin-top">
+<!-- <view class="cu-bar bg-white solid-bottom margin-top">
     <view class='action'>
         <text class='icon-title text-orange'></text> 配送公司
     </view>
-    <!-- <navigator hover-class='none' url="/pages/home/groom/index">
+    <navigator hover-class='none' url="/pages/home/groom/index">
         <view class='action' style="font-size: 27rpx;"> 更多 <view class='icon-right'></view> </view>
-    </navigator> -->
+    </navigator>
 </view>
 <view class="cu-list menu menu-avatar">
     <view class="cu-item " wx:for="{{shopInfo}}" bindtap='shopDeatil' data-shopId='{{ item.id }}'>
@@ -141,4 +154,4 @@
             <view class='text-grey text-xs'>{{ item.principal }}</view>
         </view>
     </view>
-</view>
+</view> -->

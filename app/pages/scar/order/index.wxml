@@ -13,10 +13,10 @@
             <view class="cu-item">
                 <view class='content'>
                     <view class="text-df" style="margin-bottom: 10px;font-size: 14px">{{ userInfo.name }}
-                        <text>{{ userInfo.phone }}</text></view>
+                        <text>{{ userInfo.phone ? userInfo.phone : '- -' }}</text></view>
                     <view class='text-gray text-sm canui-xzwz' style="margin-bottom: 8px">
-                        起始地址：{{ startPoint.startAddress }}</view>
-                    <view class='text-gray text-sm canui-xzwz'>运输地址：{{ endPoint.endAddress }}</view>
+                        物品地址：{{ startPoint.address }}</view>
+                    <view class='text-gray text-sm canui-xzwz'>收货地址：{{ endPoint.address }}</view>
                 </view>
                 <!-- <view class='action'><view class='text-grey icon-right'></view></view> -->
             </view>
@@ -27,25 +27,30 @@
     <view style="margin:  0 10px 20px 10px">
         <view class="bg-white canui-coupon">
             <van-cell-group inset border="{{true}}">
-                <van-cell is-link clickable arrow-direction="left" border="{{true}}" center title="车辆配置"
-                    label="{{ vehicle.label }}" is-link data-type="1" bindtap="openPopup" />
-                <van-cell is-link clickable arrow-direction="left" border="{{true}}" center title="搬运人数"
+                <van-field value="{{ weight }}" type="number" label="重量(KG)" placeholder="请输入物品重量(KG)" border="{{ true }}" bind:change="onChange" />
+                <van-field value="{{ width }}" type="number" label="宽度(厘米)" placeholder="请输入物品宽度(厘米)" border="{{ true }}" bind:change="onChange" />
+                <van-field value="{{ height }}" type="number" label="高度(厘米)" placeholder="请输入物品高度(厘米)" border="{{ true }}" bind:change="onChange" />
+                <van-cell is-link clickable arrow-direction="left" border="{{true}}" center title="物品类型"
+                    label="{{ goodsType.label }}" is-link data-type="1" bindtap="openPopup" />
+                <!-- <van-cell is-link clickable arrow-direction="left" border="{{true}}" center title="物品重量（KG）"
                     label="{{ staff.label }}" is-link data-type="2" bindtap="openPopup" />
-                <van-cell is-link clickable arrow-direction="left" border="{{true}}" center title="有无电梯"
-                    label="{{ elevator.label }}" is-link data-type="3" bindtap="openPopup" />
-                <van-cell is-link clickable arrow-direction="left" border="{{true}}" center title="预约时间"
-                    label="{{ appointmentTime }}" is-link data-type="4" bindtap="openPopup" />
-                <van-uploader file-list="{{ fileList }}" bind:after-read="afterRead" style="display: block;margin-top: 15px;" />
+                <van-cell is-link clickable arrow-direction="left" border="{{true}}" center title="物品宽度（厘米）"
+                    label="{{ elevator.label }}" is-link data-type="3" bindtap="openPopup" /> -->
+                <!-- <van-cell is-link clickable arrow-direction="left" border="{{true}}" center title="预约时间"
+                    label="{{ appointmentTime }}" is-link data-type="4" bindtap="openPopup" /> -->
+                <van-uploader file-list="{{ fileList }}" bind:after-read="afterRead"
+                    style="display: block;margin-top: 15px;" />
                 <van-field value="{{ remark.value }}" label="其他需求" type="textarea" placeholder="请输入其他需求" autosize
-                    border="{{ true }}" bind:change="onRemarkChange"/>
+                    border="{{ true }}" bind:change="onRemarkChange" />
             </van-cell-group>
         </view>
-        <van-button type="info" block style="width: 100%" bind:click="calculateAmountResult">保存配置</van-button>
+        <van-button type="info" block style="width: 100%" bind:click="calculateAmountResult" color="#6d07a8">保存配置
+        </van-button>
     </view>
 
-    <van-popup close-on-click-overlay round show="{{ vehicle.show }}" data-type="1" bind:close="onClose"
+    <van-popup close-on-click-overlay round show="{{ goodsType.show }}" data-type="1" bind:close="onClose"
         position="bottom">
-        <van-picker columns="{{ vehicle.options }}" data-type="1" bind:cancel="onClose" bind:confirm="onChange"
+        <van-picker columns="{{ goodsType.options }}" data-type="1" bind:cancel="onClose" bind:confirm="onChange"
             show-toolbar />
     </van-popup>
 
@@ -135,7 +140,8 @@
     <view class="order-price-log" wx:if="{{calculateAmountInfo != null}}">
         <view class="bg-white log-card" style="font-size: 12px">
             <view class="log-list" style="margin-bottom: 8px">
-                <text>基础金额</text> <text class="text-price canui-text-right text-red">{{ calculateAmountInfo.base }} 元</text>
+                <text>基础金额</text> <text class="text-price canui-text-right text-red">{{ calculateAmountInfo.base }}
+                    元</text>
             </view>
             <view class="log-list" style="margin-bottom: 8px">
                 <text>距离</text> <text
@@ -153,14 +159,16 @@
                     class="text-price canui-text-right text-red">{{ calculateAmountInfo.staffPrice }} 元</text>
             </view>
             <view class="log-list" style="margin-bottom: 8px">
-                <text>无电梯费用</text> <text class="text-price canui-text-right text-red">{{ calculateAmountInfo.elevator }} 元</text>
+                <text>无电梯费用</text> <text class="text-price canui-text-right text-red">{{ calculateAmountInfo.elevator }}
+                    元</text>
             </view>
             <view class="log-list" style="margin-bottom: 8px">
                 <text>车辆价格</text> <text
                     class="text-price canui-text-right text-red">{{ calculateAmountInfo.vehiclePrice }} 元</text>
             </view>
             <view class="log-list" style="margin-bottom: 8px">
-                <text>订单总价</text> <text class="text-price canui-text-right text-red">{{ calculateAmountInfo.amount }} 元</text>
+                <text>订单总价</text> <text class="text-price canui-text-right text-red">{{ calculateAmountInfo.amount }}
+                    元</text>
             </view>
             <view class="log-list" style="margin-bottom: 8px">
                 <text>优惠价格</text> <text
