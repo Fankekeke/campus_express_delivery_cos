@@ -27,9 +27,9 @@
     <view style="margin:  0 10px 20px 10px">
         <view class="bg-white canui-coupon">
             <van-cell-group inset border="{{true}}">
-                <van-field value="{{ weight }}" type="number" label="重量(KG)" placeholder="请输入物品重量(KG)" border="{{ true }}" bind:change="onChange" />
-                <van-field value="{{ width }}" type="number" label="宽度(厘米)" placeholder="请输入物品宽度(厘米)" border="{{ true }}" bind:change="onChange" />
-                <van-field value="{{ height }}" type="number" label="高度(厘米)" placeholder="请输入物品高度(厘米)" border="{{ true }}" bind:change="onChange" />
+                <van-field value="{{ weight }}" type="number" label="重量(KG)" placeholder="请输入物品重量(KG)" border="{{ true }}" data-type="1" bind:change="formChange" />
+                <van-field value="{{ width }}" type="number" label="宽度(厘米)" placeholder="请输入物品宽度(厘米)" border="{{ true }}" data-type="2" bind:change="formChange" />
+                <van-field value="{{ height }}" type="number" label="高度(厘米)" placeholder="请输入物品高度(厘米)" border="{{ true }}" data-type="3" bind:change="formChange" />
                 <van-cell is-link clickable arrow-direction="left" border="{{true}}" center title="物品类型"
                     label="{{ goodsType.label }}" is-link data-type="1" bindtap="openPopup" />
                 <!-- <van-cell is-link clickable arrow-direction="left" border="{{true}}" center title="物品重量（KG）"
@@ -140,35 +140,22 @@
     <view class="order-price-log" wx:if="{{calculateAmountInfo != null}}">
         <view class="bg-white log-card" style="font-size: 12px">
             <view class="log-list" style="margin-bottom: 8px">
-                <text>基础金额</text> <text class="text-price canui-text-right text-red">{{ calculateAmountInfo.base }}
-                    元</text>
+                <text>基础金额</text> <text class="text-price canui-text-right text-red">30元</text>
             </view>
             <view class="log-list" style="margin-bottom: 8px">
                 <text>距离</text> <text
-                    class="text-price canui-text-right text-red">{{ calculateAmountInfo.distanceLength }} 公里</text>
+                    class="text-price canui-text-right text-red">{{ calculateAmountInfo.kilometre }} 公里</text>
             </view>
             <view class="log-list" style="margin-bottom: 8px">
-                <text>距离单价</text> <text
-                    class="text-price canui-text-right text-red">{{ calculateAmountInfo.distancePrice }} 元</text>
+                <text>距离价格</text> <text
+                    class="text-price canui-text-right text-red">{{ calculateAmountInfo.distributionPrice }} 元</text>
             </view>
             <view class="log-list" style="margin-bottom: 8px">
-                <text>配送员数量</text> <text class="canui-text-right text-red">{{ calculateAmountInfo.staffNum }}</text>
+                <text>重量价格</text> <text
+                    class="text-price canui-text-right text-red">{{ calculateAmountInfo.weightPrice }} 元</text>
             </view>
             <view class="log-list" style="margin-bottom: 8px">
-                <text>配送员金额</text> <text
-                    class="text-price canui-text-right text-red">{{ calculateAmountInfo.staffPrice }} 元</text>
-            </view>
-            <view class="log-list" style="margin-bottom: 8px">
-                <text>无电梯费用</text> <text class="text-price canui-text-right text-red">{{ calculateAmountInfo.elevator }}
-                    元</text>
-            </view>
-            <view class="log-list" style="margin-bottom: 8px">
-                <text>车辆价格</text> <text
-                    class="text-price canui-text-right text-red">{{ calculateAmountInfo.vehiclePrice }} 元</text>
-            </view>
-            <view class="log-list" style="margin-bottom: 8px">
-                <text>订单总价</text> <text class="text-price canui-text-right text-red">{{ calculateAmountInfo.amount }}
-                    元</text>
+                <text>订单总价</text> <text class="text-price canui-text-right text-red">{{ calculateAmountInfo.orderPrice }} 元</text>
             </view>
             <view class="log-list" style="margin-bottom: 8px">
                 <text>优惠价格</text> <text
@@ -176,7 +163,7 @@
             </view>
             <view class="log-list bg-white text-df">
                 <text>折后价格</text><text class="text-sm text-gray">（手续费除外）</text>
-                <text class="text-price canui-text-right text-red">{{ calculateAmountInfo.afterAmount }} 元</text>
+                <text class="text-price canui-text-right text-red">{{ calculateAmountInfo.afterOrderPrice }} 元</text>
             </view>
         </view>
     </view>
@@ -185,9 +172,9 @@
 
 <view class="bg-white canui-foor-fixed canui-submit-view {{TabbarBot=='y'?'canui-submit-order':''}}"
     wx:if="{{calculateAmountInfo != null}}">
-    <view class="bg-red light text-sm canui-pay-tip">提交订单后请等待配送公司接单</view>
+    <view class="bg-red light text-sm canui-pay-tip">提交订单后请等待配送员接单</view>
     <view class="canui-submit">
-        <text class='text-red text-price canui-price'>{{ calculateAmountInfo.afterAmount }}</text>
+        <text class='text-red text-price canui-price'>{{ calculateAmountInfo.afterOrderPrice }}</text>
         <text class='bg-red canui-submit-btn' bindtap='submit'>提交订单</text>
     </view>
 </view>

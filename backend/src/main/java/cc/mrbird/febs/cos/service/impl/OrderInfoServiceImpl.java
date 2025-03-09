@@ -93,9 +93,12 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
      * @return 结果
      */
     @Override
-    public OrderInfo getPriceTotal(OrderInfo orderInfo) throws FebsException {
+    public OrderInfo  getPriceTotal(OrderInfo orderInfo) throws FebsException {
         // 用户信息
-        UserInfo userInfo = userInfoService.getOne(Wrappers.<UserInfo>lambdaQuery().eq(UserInfo::getUserId, orderInfo.getUserId()));
+        UserInfo userInfo = userInfoService.getOne(Wrappers.<UserInfo>lambdaQuery().eq(UserInfo::getId, orderInfo.getUserId()));
+        if (userInfo == null) {
+            throw new FebsException("用户信息错误");
+        }
 
         orderInfo.setUseDiscount(false);
         // 获取收货地址
@@ -104,7 +107,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         AddressInfo endAddressInfo = addressInfoService.getById(orderInfo.getEndAddressId());
 
         // 获取价格规则
-        List<PriceRules> priceRulesList = new ArrayList<>();
+        List<PriceRules> priceRulesList = priceRulesService.list();
         if (CollectionUtil.isEmpty(priceRulesList)) {
             throw new FebsException("未设置价格规则");
         }
@@ -118,7 +121,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         double distance = LocationUtils.getDistance(startAddressInfo.getLongitude().doubleValue(), startAddressInfo.getLatitude().doubleValue(), endAddressInfo.getLongitude().doubleValue(), endAddressInfo.getLatitude().doubleValue());
         orderInfo.setKilometre(NumberUtil.round(NumberUtil.div(new BigDecimal(distance), 1000), 2));
         for (PriceRules priceRules : distancePrice) {
-            if (priceRules.getMinValue().compareTo(BigDecimal.valueOf(distance)) <= 0 && priceRules.getMaxValue().compareTo(BigDecimal.valueOf(distance)) > 0) {
+            if (priceRules.getMinValue().compareTo(orderInfo.getKilometre()) <= 0 && priceRules.getMaxValue().compareTo(orderInfo.getKilometre()) > 0) {
                 orderInfo.setDistributionPrice(NumberUtil.mul(orderInfo.getKilometre(), priceRules.getUnitPrice()));
                 break;
             }
@@ -143,12 +146,16 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
             DiscountInfo discountInfo = discountInfoService.getById(orderInfo.getDiscountId());
             // 满减
             if ("2".equals(discountInfo.getType())) {
-                orderInfo.setAfterOrderPrice(NumberUtil.sub(orderInfo.getAfterOrderPrice(), discountInfo.getDiscountPrice()));
+                orderInfo.setAfterOrderPrice(NumberUtil.mul(orderInfo.getOrderPrice(), NumberUtil.mul(discountInfo.getRebate(), BigDecimal.valueOf(0.1))));
+                orderInfo.setDiscountAmount(NumberUtil.sub(orderInfo.getOrderPrice(), orderInfo.getAfterOrderPrice()));
             }
             // 折扣
             if ("1".equals(discountInfo.getType()) && orderInfo.getOrderPrice().compareTo(discountInfo.getThreshold()) >= 0) {
-                orderInfo.setAfterOrderPrice(NumberUtil.mul(orderInfo.getAfterOrderPrice(), discountInfo.getRebate()));
+                orderInfo.setAfterOrderPrice(NumberUtil.sub(orderInfo.getOrderPrice(), discountInfo.getDiscountPrice()));
+                orderInfo.setDiscountAmount(NumberUtil.sub(orderInfo.getOrderPrice(), orderInfo.getAfterOrderPrice()));
             }
+        } else {
+            orderInfo.setDiscountAmount(BigDecimal.ZERO);
         }
 
         // 判断是有可用优惠券

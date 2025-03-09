@@ -1,5 +1,6 @@
 package cc.mrbird.febs.cos.controller;
 
+import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.cos.dao.NotifyInfoMapper;
 import cc.mrbird.febs.cos.entity.*;
@@ -396,6 +397,7 @@ public class WebController {
     }
 
     /**
+     * 、
      * 贴子回复
      *
      * @return 结果
@@ -490,9 +492,8 @@ public class WebController {
      * @return 结果
      */
     @PostMapping("/calculateAmountResult")
-    public R calculateAmountResult(@RequestBody OrderInfo orderInfo) {
-//        return R.ok(orderInfoService.calculateAmountResult(orderInfo));
-        return R.ok();
+    public R calculateAmountResult(@RequestBody OrderInfo orderInfo) throws FebsException {
+        return R.ok(orderInfoService.getPriceTotal(orderInfo));
     }
 
     /**

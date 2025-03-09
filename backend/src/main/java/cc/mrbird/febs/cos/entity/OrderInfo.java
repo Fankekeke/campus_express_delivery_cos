@@ -186,4 +186,7 @@ public class OrderInfo implements Serializable {
 
     @TableField(exist = false)
     private BigDecimal staffKilometre;
+
+    @TableField(exist = false)
+    private BigDecimal discountAmount;
 }

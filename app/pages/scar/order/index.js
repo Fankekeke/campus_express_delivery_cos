@@ -61,7 +61,10 @@ Page({
             label: '',
             value: '',
             options: []
-        }
+        },
+        weight: null,
+        width: null,
+        height: null
     },
     onLoad: function (options) {
         wx.getStorage({
@@ -89,24 +92,26 @@ Page({
         })
     },
     calculateAmountResult() {
+        if (this.data.weight == null || this.data.weight == '') {
+            wx.showToast({
+                title: '请输入物品重量',
+                icon: 'none',
+                duration: 2000
+            })
+            rethrn
+        }
         let data = {
             userId: this.data.userInfo.id,
-            vehicleOptions: this.data.vehicle.value,
-            staffOptions: this.data.staff.value,
-            startAddress: this.data.startPoint.startAddress,
-            endAddress: this.data.endPoint.endAddress,
-            startLongitude: this.data.startPoint.point.longitude,
-            startLatitude: this.data.startPoint.point.latitude,
-            endLongitude: this.data.endPoint.point.longitude,
-            endLatitude: this.data.endPoint.point.latitude,
-            hasElevator: this.data.elevator.value,
-            discountCode: this.data.discount.value
+            startAddressId: this.data.startPoint.id,
+            endAddressId: this.data.endPoint.id,
+            weight: this.data.weight,
+            discountId: this.data.discount.value
         }
         http.post('calculateAmountResult', data).then((r) => {
             this.setData({
-                calculateAmountInfo: r
+                calculateAmountInfo: r.data
             })
-            this.queryUseDiscountByUserId(this.data.userInfo.id, r.amount)
+            this.queryUseDiscountByUserId(this.data.userInfo.id, r.data.orderPrice)
         })
     },
     afterRead(event) {
@@ -154,6 +159,11 @@ Page({
                 'goodsType.show': true,
             })
         }
+        if (e.currentTarget.dataset.type == 5) {
+            this.setData({
+                'discount.show': true,
+            })
+        }
     },
     onClose(e) {
         if (e.currentTarget.dataset.type == 1) {
@@ -183,6 +193,21 @@ Page({
             'remark.value':  e.detail,
         })
     },
+    formChange(e) {
+        if (e.currentTarget.dataset.type == 1) {
+            this.setData({
+                'weight': e.detail,
+            })
+        } else if (e.currentTarget.dataset.type == 2) {
+            this.setData({
+                'width': e.detail
+            })
+        } else if (e.currentTarget.dataset.type == 3) {
+            this.setData({
+                'height': e.detail
+            })
+        }
+    },
     onChange(e) {
         if (e.currentTarget.dataset.type == 1) {
             this.setData({
@@ -205,7 +230,7 @@ Page({
         } else if (e.currentTarget.dataset.type == 5) {
             this.setData({
                 'discount.label': e.detail.value.couponName,
-                'discount.value': e.detail.value.code,
+                'discount.value': e.detail.value.id,
                 'discount.show': false
             })
             this.calculateAmountResult()
