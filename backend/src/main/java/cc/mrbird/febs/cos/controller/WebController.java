@@ -254,20 +254,16 @@ public class WebController {
         return R.ok(userInfoService.updateById(userInfo));
     }
 
-//
-//    /**
-//     * 进入小程序主页信息
-//     *
-//     * @return 结果
-//     */
-//    @GetMapping("/home")
-//    public R home() {
-//        LinkedHashMap<String, Object> result = new LinkedHashMap<>();
-//        result.put("commodityHot", commodityInfoService.getCommodityHot());
-//        result.put("shopInfo", shopInfoService.shopInfoHot());
-//        result.put("postInfo", postInfoService.getPostListHot());
-//        return R.ok(result);
-//    }
+
+    /**
+     * 进入小程序主页信息
+     *
+     * @return 结果
+     */
+    @GetMapping("/home/user")
+    public R home(BigDecimal longitude, BigDecimal latitude, Integer userId) {
+        return R.ok(orderInfoService.queryHomeByUserId(longitude, latitude, userId));
+    }
 
     /**
      * 根据用户获取消息信息
@@ -658,4 +654,5 @@ public class WebController {
     public R deletePost(@RequestParam("postId") Integer postId) {
         return R.ok(postInfoService.removeById(postId));
     }
+
 }

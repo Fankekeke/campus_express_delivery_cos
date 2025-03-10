@@ -7,18 +7,24 @@ Page({
         swiperlist: [],
         goods: null,
         commoditId: null,
+        startAddress: null,
+        endAddress: null,
+        user: null,
         evaluation: []
     },
     onLoad: function (options) {
         this.setData({ commoditId: options.commoditId })
         this.getGoodsDetail(options.commoditId)
-        this.getEvaluationByGoods(options.commoditId)
     },
     getGoodsDetail(commodityId) {
-        http.get('goodsDetail', { commodityId }).then((r) => {
+        http.get('queryOrderDetail', { orderId: commodityId }).then((r) => {
+            let order = r.order
             this.setData({
-                swiperlist: r.images.split(','),
-                goods: r
+                swiperlist: order.images.split(','),
+                goods: order,
+                startAddress: r.startAddress,
+                endAddress: r.endAddress,
+                user: r.user
             })
         })
     },

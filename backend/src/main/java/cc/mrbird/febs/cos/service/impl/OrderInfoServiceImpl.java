@@ -598,7 +598,8 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         }
 
         // 获取所有未接单订单
-        List<OrderInfo> orderInfoList = this.list(Wrappers.<OrderInfo>lambdaQuery().eq(OrderInfo::getStatus, "1").ne(OrderInfo::getUserId, userId));
+//        List<OrderInfo> orderInfoList = this.list(Wrappers.<OrderInfo>lambdaQuery().eq(OrderInfo::getStatus, "1").ne(OrderInfo::getUserId, userId));
+        List<OrderInfo> orderInfoList = this.list(Wrappers.<OrderInfo>lambdaQuery().eq(OrderInfo::getStatus, "1"));
         if (CollectionUtil.isEmpty(orderInfoList)) {
             return Collections.emptyList();
         }
@@ -612,16 +613,44 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         List<LinkedHashMap<String, Object>> resultList = baseMapper.queryOrderByIds(orderIdList);
         // 计算员工与货物地址之间的距离
         for (LinkedHashMap<String, Object> orderInfo : resultList) {
-            AddressInfo startAddressInfo = addressMap.get(orderInfo.get("startAddressId").toString());
+            AddressInfo startAddressInfo = addressMap.get((int)orderInfo.get("startAddressId"));
             if (startAddressInfo == null) {
+                orderInfo.put("staffKilometre", BigDecimal.ZERO);
                 continue;
             }
             // 计算距离
             double distance = LocationUtils.getDistance(startAddressInfo.getLongitude().doubleValue(), startAddressInfo.getLatitude().doubleValue(), longitude.doubleValue(), latitude.doubleValue());
-            orderInfo.put("staffKilometre", BigDecimal.valueOf(distance));
+            orderInfo.put("staffKilometre", NumberUtil.div(distance, 1000, 2));
         }
-        resultList.sort(Comparator.comparing((Map<String, Object> h) -> ((double) h.get("staffKilometre"))).thenComparing((Map<String, Object> h) -> ((String) h.get("userSex"))));
+        resultList.sort(Comparator.comparing((Map<String, Object> h) -> (new BigDecimal(h.get("staffKilometre").toString()))).thenComparing((Map<String, Object> h) -> ((String) h.get("userSex"))));
         return resultList;
+    }
+
+    /**
+     * 根据用户ID获取主页信息
+     *
+     * @param userId 用户ID
+     * @return 结果
+     */
+    @Override
+    public LinkedHashMap<String, Object> queryHomeByUserId(BigDecimal longitude, BigDecimal latitude, Integer userId) {
+        // 返回数据
+        LinkedHashMap<String, Object> result = new LinkedHashMap<String, Object>() {
+            {
+                put("userInfo", null);
+                put("orderList", Collections.emptyList());
+            }
+        };
+        // 获取用户信息
+        UserInfo userInfo = userInfoService.getById(userId);
+        if (userInfo != null) {
+            result.put("userInfo", userInfo);
+        } else {
+            return null;
+        }
+        // 获取待接单订单
+        result.put("orderList", this.queryOrderRecommend(longitude, latitude, userId));
+        return result;
     }
 
     /**

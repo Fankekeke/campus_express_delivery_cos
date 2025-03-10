@@ -32,7 +32,7 @@ public interface IOrderInfoService extends IService<OrderInfo> {
      *
      * @return 结果
      */
-    List<LinkedHashMap<String, Object>>notCheckList();
+    List<LinkedHashMap<String, Object>> notCheckList();
 
     /**
      * 根据用户ID查询订单信息
@@ -145,10 +145,18 @@ public interface IOrderInfoService extends IService<OrderInfo> {
      *
      * @param longitude 经度
      * @param latitude  纬度
-     * @param userId   员工ID
+     * @param userId    员工ID
      * @return 结果
      */
     List<LinkedHashMap<String, Object>> queryOrderRecommend(BigDecimal longitude, BigDecimal latitude, Integer userId);
+
+    /**
+     * 根据用户ID获取主页信息
+     *
+     * @param userId 用户ID
+     * @return 结果
+     */
+    LinkedHashMap<String, Object> queryHomeByUserId(BigDecimal longitude, BigDecimal latitude, Integer userId);
 
     /**
      * 员工获取订单信息

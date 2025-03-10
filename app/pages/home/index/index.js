@@ -235,11 +235,11 @@ onChange(e) {
 		http.get('home').then((r) => {
 			console.log(r)
 
-			r.shopInfo.forEach(item => {
-				if (item.images) {
-					item.image = item.images.split(',')[0]
-				}
-			});
+			// r.shopInfo.forEach(item => {
+			// 	if (item.images) {
+			// 		item.image = item.images.split(',')[0]
+			// 	}
+			// });
 			r.postInfo.forEach(item => {
 				if (item.images) {
 					item.image = item.images.split(',')[0]

@@ -146,7 +146,7 @@
         oi.after_order_price,
         oi.integral,
         ui.name as userName,
-        ui.sex as userSex,
+        IFNULL( ui.sex, "1") as userSex,
         ui.images as userImages,
         ei.id as evaluateId,
         ui.phone,
