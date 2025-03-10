@@ -249,15 +249,19 @@
         ui.name as userName,
         ui.images as userImages,
         ei.id as evaluateId,
-        ui.phone
+        ui.phone,
+        ai1.address as startAddress,
+        ai2.address as endAddress
         from
         order_info oi
         left join user_info ui on (ui.id = oi.user_id)
         left join staff_info si on (si.id = oi.staff_ids)
         left join evaluate_info ei on (ei.order_id = oi.id)
+        left join address_info ai1 on (ai1.id = oi.start_address_id)
+        left join address_info ai2 on (ai2.id = oi.end_address_id)
         where 1 = 1
         <if test="userId != null">
-            AND ui.user_id = #{userId}
+            AND ui.id = #{userId}
         </if>
         order by oi.create_date desc
     </select>

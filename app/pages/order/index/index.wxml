@@ -17,10 +17,10 @@
     </scroll-view>
     <view class="canui-card-order margin-top">
         <view class="canui-order-item bg-white" wx:for="{{ orderList }}" wx:if="{{ TabCur == 0 || TabCur == 2 || TabCur == 1 || TabCur == 3 }}">
-            <view class="head-title-box" wx:if="{{item.merchantName}}">
-                <text class="icon-shop"></text>
-                <text>{{ item.merchantName }}</text>
-                <text class="icon-right"></text>
+            <view class="head-title-box" wx:if="{{item.orderName}}">
+                <view class="cu-tag sm bg-blue">{{ item.orderName }}</view>
+                <!-- <text style="font-size: 13px">{{ item.orderName }}</text> -->
+                <!-- <text class="icon-right"></text> -->
             </view>
             <navigator open-type="navigate" hover-class='none' wx:if="{{ TabCur == 0 }}">
                 <view class="cu-list menu menu-avatar">
@@ -31,8 +31,8 @@
                             <view style="font-size: 12px;margin-top: 5px">{{ item.endAddress }}</view>
                         </view>
                         <view class='action' style="padding-left: 15px">
-                            <view class='text-price'>{{ item.amount }}</view>
-                            <view class="text-xs text-right text-gray">{{item.distanceLength}} 公里</view>
+                            <view class='text-price'>{{ item.orderPrice }}</view>
+                            <view class="text-xs text-right text-gray">{{item.kilometre}} 公里</view>
                         </view>
                     </view>
                 </view>
@@ -46,8 +46,8 @@
                             <view style="font-size: 12px;margin-top: 5px">{{ item.endAddress }}</view>
                         </view>
                         <view class='action' style="padding-left: 15px">
-                            <view class='text-price'>{{ item.amount }}</view>
-                            <view class="text-xs text-right text-gray">{{item.distanceLength}} 公里</view>
+                            <view class='text-price'>{{ item.orderPrice }}</view>
+                            <view class="text-xs text-right text-gray">{{item.kilometre}} 公里</view>
                         </view>
                     </view>
                 </view>
@@ -64,7 +64,7 @@
             </view>
             <view class="order-price-box">
                 折后合计：
-                <text class="text-price">{{ item.afterAmount }}</text>
+                <text class="text-price">{{ item.afterOrderPrice }}</text>
                 <view wx:if="{{ item.evaluationStatus != null }}">
                 <text class="text-right text-red canui-text-left" style="font-size: 11px">
                    评价内容： {{ item.evaluationContent }}

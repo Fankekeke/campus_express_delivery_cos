@@ -507,12 +507,19 @@ public class WebController {
     public R addOrder(@RequestBody OrderInfo orderInfo) {
         orderInfo.setCode("ORD-" + System.currentTimeMillis());
         orderInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
-        orderInfo.setStatus("0");
+        orderInfo.setPayDate(DateUtil.formatDateTime(new Date()));
+        orderInfo.setStatus("1");
+
+        // 地址1
+        AddressInfo addressInfo = addressInfoService.getById(orderInfo.getStartAddressId());
+        // 地址2
+        AddressInfo addressInfo2 = addressInfoService.getById(orderInfo.getEndAddressId());
+        orderInfo.setOrderName(addressInfo.getAddress() + " - " + addressInfo2.getAddress() + " 订单");
         // 获取用户信息
         UserInfo userInfo = userInfoService.getById(orderInfo.getUserId());
         // 添加通知
         NotifyInfo notifyInfo = new NotifyInfo(userInfo.getCode(), 0, DateUtil.formatDateTime(new Date()), userInfo.getName());
-        notifyInfo.setContent("你好【" + orderInfo.getCode() + "】，此订单已付款，正在等待分配人员");
+        notifyInfo.setContent("你好【" + orderInfo.getCode() + "】，此订单已付款，正在等待配送员接单");
         notifyInfo.setUserId(userInfo.getId());
         notifyInfoService.save(notifyInfo);
 

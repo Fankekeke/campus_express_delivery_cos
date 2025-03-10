@@ -182,6 +182,12 @@ public class OrderInfo implements Serializable {
     private String staffFlag;
 
     @TableField(exist = false)
+    private String startAddress;
+
+    @TableField(exist = false)
+    private String endAddress;
+
+    @TableField(exist = false)
     private List<DiscountInfo> discountInfos;
 
     @TableField(exist = false)

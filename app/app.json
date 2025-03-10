@@ -23,7 +23,8 @@
     "pages/shop/index/index",
     "pages/user/address/index",
     "pages/user/audit/index",
-    "pages/user/goods/index"
+    "pages/user/goods/index",
+    "pages/check/index/index"
   ],
   "window": {
     "navigationBarBackgroundColor": "#39b54a",
@@ -42,6 +43,12 @@
         "iconPath": "img/home.png",
         "selectedIconPath": "img/home1.png",
         "text": "首页"
+      },
+      {
+        "pagePath": "pages/check/index/index",
+        "iconPath": "img/goodscar.png",
+        "selectedIconPath": "img/goodscar1.png",
+        "text": "接单"
       },
       {
         "pagePath": "pages/user/message/index",

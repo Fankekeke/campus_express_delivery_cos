@@ -52,6 +52,16 @@
                :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
                :scroll="{ x: 900 }"
                @change="handleTableChange">
+        <template slot="orderNameShow" slot-scope="text, record">
+          <template>
+            <a-tooltip>
+              <template slot="title">
+                {{ record.orderName }}
+              </template>
+              {{ record.orderName.slice(0, 10) }} ...
+            </a-tooltip>
+          </template>
+        </template>
         <template slot="titleShow" slot-scope="text, record">
           <template>
             <a-tooltip>
@@ -164,10 +174,12 @@ export default {
     columns () {
       return [{
         title: '订单编号',
+        ellipsis: true,
         dataIndex: 'code'
       }, {
         title: '下单用户',
         dataIndex: 'userName',
+        ellipsis: true,
         customRender: (text, row, index) => {
           if (text !== null) {
             return text
@@ -200,13 +212,8 @@ export default {
       }, {
         title: '订单名称',
         dataIndex: 'orderName',
-        customRender: (text, row, index) => {
-          if (text !== null) {
-            return text
-          } else {
-            return '- -'
-          }
-        }
+        ellipsis: true,
+        scopedSlots: {customRender: 'orderNameShow'}
       }, {
         title: '物品图片',
         dataIndex: 'images',
@@ -249,10 +256,12 @@ export default {
       }, {
         title: '备注',
         dataIndex: 'remark',
+        ellipsis: true,
         scopedSlots: {customRender: 'titleShow'}
       }, {
         title: '下单时间',
         dataIndex: 'createDate',
+        ellipsis: true,
         customRender: (text, row, index) => {
           if (text !== null) {
             return text

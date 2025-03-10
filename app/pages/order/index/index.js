@@ -8,17 +8,14 @@ Page({
         TabCur: 0,
         scrollLeft: 0,
         SortMenu: [{
-            id: 0,
+            id: 1,
             name: "等待接单"
         }, {
-            id: 1,
-            name: "等待分配"
-        }, {
             id: 2,
-            name: "正在赶往"
+            name: "正在配送"
         }, {
             id: 3,
-            name: "运输完成"
+            name: "配送完成"
         }],
         userInfo: null,
         orderListCopy: [],
@@ -251,7 +248,7 @@ Page({
             
             let orderList = []
             r.data.forEach(item => {
-                if (item.status == 0) {
+                if (item.status == 1) {
                     orderList.push(item)
                 }
             });
