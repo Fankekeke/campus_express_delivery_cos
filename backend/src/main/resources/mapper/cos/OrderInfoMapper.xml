@@ -266,6 +266,55 @@
         order by oi.create_date desc
     </select>
 
+    <!-- 根据用户ID查询接单订单信息 -->
+    <select id="queryOrderListByStaffId" resultType="java.util.LinkedHashMap">
+        select
+        oi.id,
+        oi.code,
+        oi.order_name,
+        oi.user_id,
+        oi.total,
+        oi.create_date,
+        oi.remark,
+        oi.status,
+        oi.staff_ids,
+        oi.pay_date,
+        oi.goods_type,
+        oi.images,
+        oi.weight,
+        oi.height,
+        oi.width,
+        oi.start_address_id,
+        oi.end_address_id,
+        oi.delivery_date,
+        oi.logistics_info,
+        oi.finish_date,
+        oi.kilometre,
+        oi.distribution_price,
+        oi.order_price,
+        oi.discount_id,
+        oi.after_order_price,
+        oi.integral,
+        ui.name as userName,
+        ui.images as userImages,
+        ei.id as evaluateId,
+        ui.phone,
+        ai1.address as startAddress,
+        ai2.address as endAddress
+        from
+        order_info oi
+        left join user_info ui on (ui.id = oi.user_id)
+        left join staff_info si on (si.id = oi.staff_ids)
+        left join evaluate_info ei on (ei.order_id = oi.id)
+        left join address_info ai1 on (ai1.id = oi.start_address_id)
+        left join address_info ai2 on (ai2.id = oi.end_address_id)
+        where 1 = 1
+        <if test="userId != null">
+            AND si.user_id = #{userId}
+        </if>
+        order by oi.create_date desc
+    </select>
+
     <!-- 本月订单信息 -->
     <select id="selectOrderByMonth" resultType="cc.mrbird.febs.cos.entity.OrderInfo">
         select

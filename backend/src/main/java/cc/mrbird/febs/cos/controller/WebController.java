@@ -62,6 +62,8 @@ public class WebController {
 
     private final IAddressInfoService addressInfoService;
 
+    private final IAuditInfoService auditInfoService;
+
 
     /**
      * File 转MultipartFile
@@ -623,6 +625,17 @@ public class WebController {
     }
 
     /**
+     * 获取配送员所有订单
+     *
+     * @param userId 配送员ID
+     * @return 结果
+     */
+    @GetMapping("/queryOrderListByStaffId")
+    public R queryOrderListByStaffId(Integer userId) {
+        return R.ok(orderInfoService.queryOrderListByStaffId(userId));
+    }
+
+    /**
      * 根据状态用户ID获取优惠券信息
      *
      * @param userId 用户ID
@@ -655,4 +668,28 @@ public class WebController {
         return R.ok(postInfoService.removeById(postId));
     }
 
+    /**
+     * 根据用户获取审核信息
+     *
+     * @param userId 用户ID
+     * @return 结果
+     */
+    @GetMapping("/queryAuditInfoByUser")
+    public R queryAuditInfoByUser(Integer userId) {
+        AuditInfo auditInfo = auditInfoService.getOne(Wrappers.<AuditInfo>lambdaQuery().eq(AuditInfo::getUserId, userId));
+        return R.ok(auditInfo);
+    }
+
+    /**
+     * 添加审核信息
+     *
+     * @param auditInfo 审核信息
+     * @return 结果
+     */
+    @PostMapping("/userAuditAdd")
+    public R userAuditAdd(@RequestBody AuditInfo auditInfo) {
+        auditInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
+        auditInfo.setAuditStatus(0);
+        return R.ok(auditInfoService.saveOrUpdate(auditInfo));
+    }
 }

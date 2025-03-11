@@ -36,7 +36,7 @@ Page({
     })
   },
   getAuditInfo(userId) {
-    http.get('auditInfoByUser', {userId}).then((r) => {
+    http.get('queryAuditInfoByUser', {userId}).then((r) => {
       console.log(JSON.stringify(r.data))
       if (r.data !== null) {
         this.setData({ auditInfo: r.data })
@@ -58,7 +58,7 @@ Page({
           this.data.fileList.forEach(item => {
             images.push(item.url)
           });
-          let data = {tag: this.data.tag, introduction: this.data.content, userId: res.data.id, images: images.length !== 0 ? images.join(',') : null}
+          let data = {tag: this.data.tag, introduction: this.data.content, userId: res.data.id, images: images.length !== 0 ? images.join(',') : null, id: this.data.auditInfo != null ? this.data.auditInfo.id : null}
           http.post('userAuditAdd', data).then((r) => {
             wx.showToast({
               title: '提交成功！',
@@ -66,8 +66,8 @@ Page({
               duration: 2000
             })
             setTimeout(() => {
-              wx.switchTab({
-                url: '../index/index'
+              wx.navigateBack({
+                delta: 1
               })
             }, 1500)
           })

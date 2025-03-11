@@ -6,6 +6,7 @@ import cc.mrbird.febs.cos.entity.AuditInfo;
 import cc.mrbird.febs.cos.entity.OrderInfo;
 import cc.mrbird.febs.cos.entity.StaffInfo;
 import cc.mrbird.febs.cos.entity.UserInfo;
+import cc.mrbird.febs.cos.service.IAuditInfoService;
 import cc.mrbird.febs.cos.service.IOrderInfoService;
 import cc.mrbird.febs.cos.service.IStaffInfoService;
 import cc.mrbird.febs.cos.service.IUserInfoService;
@@ -15,6 +16,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -38,6 +40,8 @@ public class StaffInfoController {
 
     private final UserService userInfoService;
 
+    private final IAuditInfoService auditInfoService;
+
     /**
      * 分页获取员工信息
      *
@@ -57,6 +61,7 @@ public class StaffInfoController {
      * @param status  上下线状态
      * @return 结果
      */
+    @Transactional(rollbackFor = Exception.class)
     @GetMapping("/onPutFlag")
     public R onPutFlag(Integer staffId, Integer status) {
         StaffInfo staffInfo = staffInfoService.getById(staffId);
@@ -65,10 +70,12 @@ public class StaffInfoController {
         // 更新用户类型
         if (status == 1) {
             userInfoService1.update(Wrappers.<UserInfo>lambdaUpdate().set(UserInfo::getType, 2));
+            auditInfoService.update(Wrappers.<AuditInfo>lambdaUpdate().set(AuditInfo::getAuditStatus, 1).eq(AuditInfo::getUserId, staffInfo.getUserId()));
         } else {
             userInfoService1.update(Wrappers.<UserInfo>lambdaUpdate().set(UserInfo::getType, 1));
+            auditInfoService.update(Wrappers.<AuditInfo>lambdaUpdate().set(AuditInfo::getAuditStatus, 2).eq(AuditInfo::getUserId, staffInfo.getUserId()));
         }
-        return R.ok();
+        return R.ok(true);
     }
 
     /**

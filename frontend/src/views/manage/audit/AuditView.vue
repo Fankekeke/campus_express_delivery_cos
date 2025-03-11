@@ -1,5 +1,5 @@
 <template>
-  <a-modal v-model="show" title="商铺审核" @cancel="onClose" :width="800">
+  <a-modal v-model="show" title="配送员审核" @cancel="onClose" :width="800">
     <template slot="footer">
       <a-button key="back" @click="check(2)" type="danger">
         驳回
@@ -26,16 +26,16 @@
       <br/>
       <br/>
       <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">标签</span></a-col>
+        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">真实姓名</span></a-col>
         <a-col :span="24">
           <a-tag v-if="auditData.tag !== null" v-for="(item, index) in auditData.tag.split(',')" :key="index">{{ item }}</a-tag>
-          <span v-else>暂无标签</span>
+          <span v-else>暂无真实姓名</span>
         </a-col>
       </a-row>
       <br/>
       <br/>
       <a-row style="padding-left: 24px;padding-right: 24px;">
-        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">简介</span></a-col>
+        <a-col style="margin-bottom: 15px"><span style="font-size: 15px;font-weight: 650;color: #000c17">申请内容</span></a-col>
         <a-col :span="24">
           {{ auditData.introduction !== null ? auditData.introduction : '- -' }}
         </a-col>

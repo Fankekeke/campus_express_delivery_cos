@@ -87,6 +87,17 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     }
 
     /**
+     * 获取配送员所有订单
+     *
+     * @param userId 配送员ID
+     * @return 结果
+     */
+    @Override
+    public List<LinkedHashMap<String, Object>> queryOrderListByStaffId(Integer userId) {
+        return baseMapper.queryOrderListByStaffId(userId);
+    }
+
+    /**
      * 获取订单付款信息
      *
      * @param orderInfo 订单信息
@@ -593,9 +604,6 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     public List<LinkedHashMap<String, Object>> queryOrderRecommend(BigDecimal longitude, BigDecimal latitude, Integer userId) {
         // 获取员工信息
         StaffInfo staffInfo = staffInfoService.getOne(Wrappers.<StaffInfo>lambdaQuery().eq(StaffInfo::getUserId, userId));
-        if (staffInfo != null) {
-            return Collections.emptyList();
-        }
 
         // 获取所有未接单订单
 //        List<OrderInfo> orderInfoList = this.list(Wrappers.<OrderInfo>lambdaQuery().eq(OrderInfo::getStatus, "1").ne(OrderInfo::getUserId, userId));

@@ -173,12 +173,12 @@ export default {
           }
         }
       }, {
-        title: '介绍',
+        title: '申请内容',
         ellipsis: true,
         dataIndex: 'introduction',
         scopedSlots: { customRender: 'introductionShow' }
       }, {
-        title: '标签',
+        title: '真是姓名',
         dataIndex: 'tag',
         customRender: (text, row, index) => {
           if (text !== null) {

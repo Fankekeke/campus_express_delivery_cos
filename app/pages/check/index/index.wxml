@@ -8,7 +8,7 @@
 <view class="cu-bar bg-white margin-top solid-bottom" wx:if="{{ staffInfo.type == 1 }}">
     <view class='action'>
         <text class='icon-title text-green'></text>
-        <text>申请成为配送员</text>
+        <text style="font-size: 14px">申请成为配送员</text>
     </view>
     <navigator hover-class='none' url="/pages/user/audit/index">
         <view class='action' style="font-size: 27rpx;"> 申请 <view class='icon-right'></view> </view>
@@ -17,10 +17,18 @@
 <view class="cu-bar bg-white margin-top solid-bottom" wx:if="{{ staffInfo.type == 2 }}">
     <view class='action'>
         <text class='icon-title text-green'></text>
-        <text>我的配送订单</text>
+        <text style="font-size: 14px">我的配送订单</text>
     </view>
     <navigator hover-class='none' url="/pages/order/staff/index">
         <view class='action' style="font-size: 27rpx;"> 查看 <view class='icon-right'></view> </view>
+    </navigator>
+</view>
+<view class="cu-bar bg-white margin-top solid-bottom">
+    <view class='action'>
+        <text class='icon-list text-green'></text>
+        <text style="font-size: 14px">接单中心</text>
+    </view>
+    <navigator hover-class='none' url="/pages/order/staff/index">
     </navigator>
 </view>
 <view class="bg-white" style="padding:0 30rpx;padding-bottom: 20rpx;padding-top: 20rpx;">
@@ -47,6 +55,12 @@
                 </view>
             </view>
         </navigator>
-
+    </view>
+    <view style="padding: 20px;display: block" wx:if="{{orderList.length == 0}}">
+        <view class="flex-sub text-center">
+            <view class="solid-bottom text-xl padding">
+                <text class="text-black">暂无订单信息</text>
+            </view>
+        </view>
     </view>
 </view>

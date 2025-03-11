@@ -75,6 +75,7 @@ public class AuditInfoController {
             staffInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
             staffInfo.setImages(userInfo.getImages());
             staffInfo.setStatus(1);
+            staffInfo.setSex(Integer.valueOf(userInfo.getSex()));
             staffInfoService.save(staffInfo);
         }
         // 更新审核时间

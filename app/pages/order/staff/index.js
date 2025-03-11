@@ -5,7 +5,7 @@ Page({
         StatusBar: app.globalData.StatusBar,
         CustomBar: app.globalData.CustomBar,
         TabbarBot: app.globalData.tabbar_bottom,
-        TabCur: 0,
+        TabCur: 2,
         scrollLeft: 0,
         SortMenu: [{
             id: 2,
@@ -232,7 +232,7 @@ Page({
         }
     },
     getOrderListByUserId(userId) {
-        http.get('getOrderListByUserId', {
+        http.get('queryOrderListByStaffId', {
             userId
         }).then((r) => {
             r.data.forEach(item => {
@@ -245,7 +245,7 @@ Page({
             
             let orderList = []
             r.data.forEach(item => {
-                if (item.status == 1) {
+                if (item.status == 2) {
                     orderList.push(item)
                 }
             });

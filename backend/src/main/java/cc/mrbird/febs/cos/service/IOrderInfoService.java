@@ -43,6 +43,14 @@ public interface IOrderInfoService extends IService<OrderInfo> {
     List<LinkedHashMap<String, Object>> queryOrderByUserId(Integer userId);
 
     /**
+     * 获取配送员所有订单
+     *
+     * @param userId 配送员ID
+     * @return 结果
+     */
+    List<LinkedHashMap<String, Object>> queryOrderListByStaffId(Integer userId);
+
+    /**
      * 获取订单付款信息
      *
      * @param orderInfo 订单信息
