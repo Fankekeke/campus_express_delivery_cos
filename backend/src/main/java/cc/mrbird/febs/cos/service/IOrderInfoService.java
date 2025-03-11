@@ -94,11 +94,10 @@ public interface IOrderInfoService extends IService<OrderInfo> {
     /**
      * 订单收货
      *
-     * @param orderCode 订单编号
-     * @param status    状态
+     * @param orderId 订单编号
      * @return 结果
      */
-    boolean auditOrderFinish(String orderCode, Integer status);
+    boolean auditOrderFinish(Integer orderId);
 
     /**
      * 订单支付

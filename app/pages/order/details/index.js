@@ -9,6 +9,9 @@ Page({
         merchant: null,
         user: null,
         staff: [],
+        commoditId: null,
+        startAddress: null,
+        endAddress: null,
         vehicle: null
     },
     onLoad: function (options) {
@@ -33,37 +36,23 @@ Page({
     },
     takePhone() {
         wx.makePhoneCall({
-            phoneNumber: '1340000'
+            phoneNumber: this.data.user.phone
           })
     },
     getOrderDetail(orderId) {
-        http.get('queryOrderDetail', {orderId: orderId}).then((r) => {
-            console.log(r)
-            // r.data.forEach(item => {
-            //     item.image = item.images.split(',')[0]
-            // });
-            let merchant = r.merchant;
-            if (merchant.images) {
-                merchant.image = merchant.images.split(',')[0]
-            }
-            let staff = r.staff;
-            let user = r.user;
-            staff.forEach(item => {
-                item.image = item.images.split(',')[0]
-            });
-            let order = r.order;
+        http.get('queryOrderDetail', {
+            orderId: orderId
+        }).then((r) => {
+            let order = r.order
             if (order.images) {
                 order.imageList = order.images.split(',')
             }
-            let vehicle = r.vehicle;
-			this.setData({
+            this.setData({
                 orderInfo: order,
-                merchant,
-                staff,
-                vehicle,
-                user
+                startAddress: r.startAddress,
+                endAddress: r.endAddress,
+                user: r.user
             })
-            console.log(this.data.orderInfo)
-		})
+        })
     }
 });

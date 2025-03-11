@@ -123,6 +123,7 @@ export default {
       return [{
         title: '员工编号',
         dataIndex: 'staffCode',
+        ellipsis: true,
         customRender: (text, row, index) => {
           if (text !== null) {
             return text
@@ -133,6 +134,7 @@ export default {
       }, {
         title: '员工姓名',
         dataIndex: 'staffName',
+        ellipsis: true,
         customRender: (text, row, index) => {
           if (text !== null) {
             return text
@@ -155,6 +157,7 @@ export default {
       }, {
         title: '订单编号',
         dataIndex: 'orderCode',
+        ellipsis: true,
         customRender: (text, row, index) => {
           if (text !== null) {
             return text
@@ -165,6 +168,7 @@ export default {
       }, {
         title: '订单名称',
         dataIndex: 'orderName',
+        ellipsis: true,
         customRender: (text, row, index) => {
           if (text !== null) {
             return text
@@ -175,9 +179,10 @@ export default {
       }, {
         title: '联系方式',
         dataIndex: 'phone',
+        ellipsis: true,
         customRender: (text, row, index) => {
           if (text !== null) {
-            return text + '分'
+            return text
           } else {
             return '- -'
           }
@@ -185,6 +190,7 @@ export default {
       }, {
         title: '订单收益',
         dataIndex: 'income',
+        ellipsis: true,
         customRender: (text, row, index) => {
           if (text !== null) {
             return text + '元'
@@ -195,6 +201,7 @@ export default {
       }, {
         title: '配送费用',
         dataIndex: 'deliveryPrice',
+        ellipsis: true,
         customRender: (text, row, index) => {
           if (text !== null) {
             return text + '元'
@@ -205,6 +212,7 @@ export default {
       }, {
         title: '总收益',
         dataIndex: 'totalPrice',
+        ellipsis: true,
         customRender: (text, row, index) => {
           if (text !== null) {
             return text + '元'
@@ -215,6 +223,7 @@ export default {
       }, {
         title: '创建时间',
         dataIndex: 'createDate',
+        ellipsis: true,
         customRender: (text, row, index) => {
           if (text !== null) {
             return text

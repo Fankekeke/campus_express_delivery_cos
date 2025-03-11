@@ -100,6 +100,10 @@
         <view class='icon-service'></view>
         联系用户
     </button>
+    <button class="action text-purple" bindtap='takePhone'>
+        <view class='icon-phone'></view>
+        电话联系
+    </button>
     <!-- <view class="action text-grey" bindtap='cartView'>
         <view class='icon-cart'></view>
         购物车

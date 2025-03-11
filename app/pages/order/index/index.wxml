@@ -65,7 +65,7 @@
             <view class="order-price-box">
                 折后合计：
                 <text class="text-price">{{ item.afterOrderPrice }}</text>
-                <view wx:if="{{ item.evaluationStatus != null }}">
+                <view wx:if="{{ item.evaluateId != null }}">
                 <text class="text-right text-red canui-text-left" style="font-size: 11px">
                    评价内容： {{ item.evaluationContent }}
                 </text>
@@ -80,16 +80,16 @@
                     <van-tag wx:if="{{item.complaintId != null && item.complaintStatus == 0}}" type="danger">未处理</van-tag>
                     <van-tag wx:if="{{item.complaintId != null && item.complaintStatus == 1}}" type="success">已处理</van-tag>
                 </view>
-                <view class='margin-tb-sm text-center' wx:if="{{ item.status == 3 && item.evaluationStatus == null}}">
+                <view class='margin-tb-sm text-center' wx:if="{{ item.status == 3 && item.evaluateId == null}}">
                     <button class='cu-btn round line-gray shadow' bindtap="evaluation" data-index="{{item.id}}">
                         评 价
                     </button>
                 </view>
-                <view class='margin-tb-sm text-center' wx:if="{{ item.status == 2 }}">
+                <!-- <view class='margin-tb-sm text-center' wx:if="{{ item.status == 2 }}">
                     <button class='cu-btn round line-red shadow' data-index="{{item.id}}" bindtap="receipt">
                         运输结束
                     </button>
-                </view>
+                </view> -->
             </view>
         </view>
         <view wx:if="{{ orderList.length === 0 }}">

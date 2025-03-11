@@ -218,12 +218,15 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         if (StrUtil.isNotEmpty(userInfo.getMail())) {
             Context context = new Context();
             context.setVariable("today", DateUtil.formatDate(new Date()));
-            context.setVariable("custom", userInfo.getName() + "，您好，消费订单已被接单，联系方式：" + staffInfo.getPhone());
+            context.setVariable("custom", userInfo.getName() + "，您好，订单已被接单，联系方式：" + staffInfo.getPhone());
             String emailContent = templateEngine.process("registerEmail", context);
             mailService.sendHtmlMail(userInfo.getMail(), DateUtil.formatDate(new Date()) + "订单接单", emailContent);
         }
 
-        return this.update(Wrappers.<OrderInfo>lambdaUpdate().set(OrderInfo::getStaffIds, staffInfo.getId()).set(OrderInfo::getStatus, 2).eq(OrderInfo::getId, orderId));
+        orderInfo.setStaffIds(String.valueOf(staffInfo.getId()));
+        orderInfo.setStatus("2");
+        orderInfo.setDeliveryDate(DateUtil.formatDateTime(new Date()));
+        return this.updateById(orderInfo);
     }
 
     /**
@@ -320,13 +323,12 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     /**
      * 订单收货
      *
-     * @param orderCode 订单编号
-     * @param status    状态
+     * @param orderId 订单编号
      * @return 结果
      */
     @Override
-    public boolean auditOrderFinish(String orderCode, Integer status) {
-        OrderInfo order = this.getOne(Wrappers.<OrderInfo>lambdaQuery().eq(OrderInfo::getCode, orderCode));
+    public boolean auditOrderFinish(Integer orderId) {
+        OrderInfo order = this.getById(orderId);
 
         UserInfo userInfo = userInfoService.getById(order.getUserId());
 
@@ -337,9 +339,9 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         staffIncome.setCreateDate(DateUtil.formatDateTime(new Date()));
 
         // 订单价格
-        staffIncome.setIncome(NumberUtil.mul(new BigDecimal(30), 0.8));
-        staffIncome.setDeliveryPrice(NumberUtil.mul(order.getDistributionPrice(), 0.8));
-        staffIncome.setTotalPrice(NumberUtil.mul(order.getOrderPrice(), 0.8));
+        staffIncome.setIncome(BigDecimal.valueOf(30));
+        staffIncome.setDeliveryPrice(order.getDistributionPrice());
+        staffIncome.setTotalPrice(order.getAfterOrderPrice());
         staffIncomeService.save(staffIncome);
 
         // 更新员工收益
@@ -351,11 +353,19 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         if (StrUtil.isNotEmpty(userInfo.getMail())) {
             Context context = new Context();
             context.setVariable("today", DateUtil.formatDate(new Date()));
-            context.setVariable("custom", userInfo.getName() + "，您好， 消费订单 " + order.getCode() + " 已完成，可进行评价");
+            context.setVariable("custom", userInfo.getName() + "，您好， 订单 " + order.getCode() + " 已配送完成，请检查物品信息。进行评价");
             String emailContent = templateEngine.process("registerEmail", context);
             mailService.sendHtmlMail(userInfo.getMail(), DateUtil.formatDate(new Date()) + "订单完成", emailContent);
         }
-        return this.update(Wrappers.<OrderInfo>lambdaUpdate().set(OrderInfo::getStatus, status).eq(OrderInfo::getCode, orderCode));
+
+        // 更新用户积分
+        userInfo.setIntegral(NumberUtil.add(userInfo.getIntegral() == null ? BigDecimal.ZERO : userInfo.getIntegral(), staffIncome.getTotalPrice()));
+        userInfoService.updateById(userInfo);
+
+        // 订单状态
+        order.setStatus("3");
+        order.setFinishDate(DateUtil.formatDateTime(new Date()));
+        return this.updateById(order);
     }
 
     /**
@@ -606,8 +616,8 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         StaffInfo staffInfo = staffInfoService.getOne(Wrappers.<StaffInfo>lambdaQuery().eq(StaffInfo::getUserId, userId));
 
         // 获取所有未接单订单
-//        List<OrderInfo> orderInfoList = this.list(Wrappers.<OrderInfo>lambdaQuery().eq(OrderInfo::getStatus, "1").ne(OrderInfo::getUserId, userId));
-        List<OrderInfo> orderInfoList = this.list(Wrappers.<OrderInfo>lambdaQuery().eq(OrderInfo::getStatus, "1"));
+        List<OrderInfo> orderInfoList = this.list(Wrappers.<OrderInfo>lambdaQuery().eq(OrderInfo::getStatus, "1").ne(OrderInfo::getUserId, userId));
+//        List<OrderInfo> orderInfoList = this.list(Wrappers.<OrderInfo>lambdaQuery().eq(OrderInfo::getStatus, "1"));
         if (CollectionUtil.isEmpty(orderInfoList)) {
             return Collections.emptyList();
         }
@@ -646,7 +656,9 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         LinkedHashMap<String, Object> result = new LinkedHashMap<String, Object>() {
             {
                 put("userInfo", null);
+                put("staffInfo", null);
                 put("orderList", Collections.emptyList());
+                put("withdraw", null);
             }
         };
         // 获取用户信息
@@ -656,6 +668,9 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         } else {
             return null;
         }
+        StaffInfo staffInfo = staffInfoService.getOne(Wrappers.<StaffInfo>lambdaQuery().eq(StaffInfo::getUserId, userId));
+        result.put("staffInfo", staffInfo);
+        result.put("withdraw", withdrawInfoService.getOne(Wrappers.<WithdrawInfo>lambdaQuery().eq(WithdrawInfo::getStaffId, staffInfo.getId()).eq(WithdrawInfo::getStatus, "0")));
         // 获取待接单订单
         result.put("orderList", this.queryOrderRecommend(longitude, latitude, userId));
         return result;

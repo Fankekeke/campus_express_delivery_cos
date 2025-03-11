@@ -55,6 +55,16 @@ public class StaffInfoController {
     }
 
     /**
+     * 获取员工评价
+     *
+     * @return 结果
+     */
+    @GetMapping("/evaluate")
+    public R evaluate() {
+        return R.ok(staffInfoService.evaluate());
+    }
+
+    /**
      * 更新员工上下线状态
      *
      * @param staffId 员工ID

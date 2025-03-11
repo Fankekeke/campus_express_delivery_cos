@@ -73,7 +73,7 @@
             </view>
            
             <view class="grid col-4 flex justify-end order-btn-box">
-                <view class='margin-tb-sm text-center' wx:if="{{ item.status == 3 }}">
+                <!-- <view class='margin-tb-sm text-center' wx:if="{{ item.status == 3 }}">
                     <button wx:if="{{item.complaintId == null}}" class='cu-btn round line-gray shadow' bindtap="complaint" data-index="{{item.id}}">
                         投 诉
                     </button>
@@ -84,7 +84,7 @@
                     <button class='cu-btn round line-gray shadow' bindtap="evaluation" data-index="{{item.id}}">
                         评 价
                     </button>
-                </view>
+                </view> -->
                 <view class='margin-tb-sm text-center' wx:if="{{ item.status == 2 }}">
                     <button class='cu-btn round line-red shadow' data-index="{{item.id}}" bindtap="receipt">
                         运输结束

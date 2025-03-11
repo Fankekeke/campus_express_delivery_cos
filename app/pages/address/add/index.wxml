@@ -2,7 +2,7 @@
 <view class="cu-custom" style="height:{{CustomBar}}px;">
     <view class="cu-bar fixed none-bg text-white bg-img" style="height:{{CustomBar}}px;padding-top:{{StatusBar}}px;">
         <navigator class='action canui-head-title' open-type="navigateBack" hover-class="none">
-            <text class='icon-back'></text> 添加收货地址
+            <text class='icon-back'></text> 添加地址
         </navigator>
     </view>
 </view>
@@ -43,5 +43,5 @@
 </view>
 
 <view class="canui-foor-fixed {{TabbarBot=='y'?'canui-tabbar-bottom':''}}">
-    <button class="cu-btn canui-color-gradual shadow-blur round lg" bindtap='add'><text class="icon-add"></text> 新增收货地址</button>
+    <button class="cu-btn canui-color-gradual shadow-blur round lg" bindtap='add'><text class="icon-add"></text> 新增地址</button>
 </view>

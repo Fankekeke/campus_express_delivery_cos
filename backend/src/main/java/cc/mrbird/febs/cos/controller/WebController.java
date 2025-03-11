@@ -6,6 +6,7 @@ import cc.mrbird.febs.cos.dao.NotifyInfoMapper;
 import cc.mrbird.febs.cos.entity.*;
 import cc.mrbird.febs.cos.service.*;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
@@ -63,6 +64,10 @@ public class WebController {
     private final IAddressInfoService addressInfoService;
 
     private final IAuditInfoService auditInfoService;
+
+    private final IWithdrawInfoService withdrawInfoService;
+
+    private final IStaffInfoService staffInfoService;
 
 
     /**
@@ -145,6 +150,7 @@ public class WebController {
             }
             System.out.println(warning);
             user.setImages(warning);
+            user.setType("1");
             userInfoService.save(user);
             return R.ok(user);
         }
@@ -579,7 +585,6 @@ public class WebController {
     public R complaintAdd(Integer userId, Integer orderId, String content) {
         OrderInfo orderInfo = orderInfoService.getById(orderId);
         // 获取用户编号
-        UserInfo userInfo = userInfoService.getById(orderInfo.getUserId());
         ComplaintInfo complaintInfo = new ComplaintInfo();
         complaintInfo.setContent(content);
         complaintInfo.setUserId(userId);
@@ -598,8 +603,7 @@ public class WebController {
      */
     @GetMapping("/receipt")
     public R receipt(Integer orderId) {
-//        return R.ok(orderInfoService.receipt(orderId));
-        return R.ok();
+        return R.ok(orderInfoService.auditOrderFinish(orderId));
     }
 
     /**
@@ -691,5 +695,90 @@ public class WebController {
         auditInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
         auditInfo.setAuditStatus(0);
         return R.ok(auditInfoService.saveOrUpdate(auditInfo));
+    }
+
+    /**
+     * 根据用户ID获取用户信息
+     *
+     * @param userId 用户ID
+     * @return 结果
+     */
+    @GetMapping("/getUserInfoById")
+    public R getUserInfoById(Integer userId) {
+        return R.ok(userInfoService.getById(userId));
+    }
+
+    /**
+     * 配送员接单
+     *
+     * @param orderId 订单ID
+     * @param staffId 配送员ID
+     * @return 结果
+     */
+    @GetMapping("/checkOrder")
+    public R checkOrder(Integer orderId, Integer staffId) {
+        return R.ok(orderInfoService.checkOrder(orderId, staffId));
+    }
+
+    /**
+     * 兑换优惠券
+     *
+     * @param userId 用户ID
+     * @param type   类型
+     * @return 结果
+     */
+    @GetMapping("/exchange")
+    public R exchange(Integer userId, Integer type) {
+        DiscountInfo discountInfo = new DiscountInfo();
+        UserInfo userInfo = userInfoService.getById(userId);
+        if (type == 1) {
+            discountInfo.setCode("DC-" + System.currentTimeMillis());
+            discountInfo.setStatus("0");
+            discountInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
+            discountInfo.setDiscountPrice(BigDecimal.valueOf(100));
+            discountInfo.setThreshold(BigDecimal.valueOf(500));
+            discountInfo.setUserId(userId);
+            discountInfo.setCouponName("500-100满减券");
+            discountInfo.setContent("500-100满减券");
+            discountInfo.setType("1");
+            userInfo.setIntegral(NumberUtil.sub(userInfo.getIntegral(), BigDecimal.valueOf(300)));
+        } else {
+            discountInfo.setCode("DC-" + System.currentTimeMillis());
+            discountInfo.setStatus("0");
+            discountInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
+            discountInfo.setRebate(BigDecimal.valueOf(8));
+            discountInfo.setUserId(userId);
+            discountInfo.setCouponName("八折无门槛优惠券");
+            discountInfo.setContent("八折无门槛优惠券");
+            discountInfo.setType("2");
+            userInfo.setIntegral(NumberUtil.sub(userInfo.getIntegral(), BigDecimal.valueOf(200)));
+        }
+        discountInfoService.save(discountInfo);
+        return R.ok(userInfoService.updateById(userInfo));
+    }
+
+    /**
+     * 新增提现记录信息
+     *
+     * @param withdrawInfo 提现记录信息
+     * @return 结果
+     */
+    @PostMapping("/withdrawInfoAdd")
+    public R save(@RequestBody WithdrawInfo withdrawInfo) throws FebsException {
+        // 校验此员工是否有提现正在审核中
+        int count = withdrawInfoService.count(Wrappers.<WithdrawInfo>lambdaQuery().eq(WithdrawInfo::getStatus, 0).eq(WithdrawInfo::getStaffId, withdrawInfo.getStaffId()));
+        if (count > 0) {
+            throw new FebsException("存在正在审核的提现记录！");
+        }
+        withdrawInfo.setCode("WD-" + System.currentTimeMillis());
+        StaffInfo staffInfo = staffInfoService.getOne(Wrappers.<StaffInfo>lambdaQuery().eq(StaffInfo::getUserId, withdrawInfo.getStaffId()));
+        if (staffInfo != null) {
+            withdrawInfo.setStaffId(staffInfo.getId());
+        }
+        withdrawInfo.setStatus("0");
+        withdrawInfo.setWithdrawPrice(staffInfo.getPrice());
+        withdrawInfo.setAccountPrice(BigDecimal.ZERO);
+        withdrawInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
+        return R.ok(withdrawInfoService.save(withdrawInfo));
     }
 }

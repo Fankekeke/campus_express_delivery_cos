@@ -94,18 +94,6 @@ public class OrderInfoController {
     }
 
     /**
-     * 订单收货
-     *
-     * @param orderCode 订单编号
-     * @param status    状态
-     * @return 结果
-     */
-    @GetMapping("/auditOrderFinish")
-    public R auditOrderFinish(@RequestParam("orderCode") String orderCode, @RequestParam("status") Integer status) {
-        return R.ok(orderInfoService.auditOrderFinish(orderCode, status));
-    }
-
-    /**
      * 订单支付
      *
      * @param orderCode 订单编号

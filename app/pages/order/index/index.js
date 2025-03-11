@@ -5,7 +5,7 @@ Page({
         StatusBar: app.globalData.StatusBar,
         CustomBar: app.globalData.CustomBar,
         TabbarBot: app.globalData.tabbar_bottom,
-        TabCur: 0,
+        TabCur: 1,
         scrollLeft: 0,
         SortMenu: [{
             id: 1,
@@ -134,7 +134,7 @@ Page({
                 userId: this.data.userInfo.id
             }).then((r) => {
                 this.setData({
-                    shcomplaintShowow: false
+                    complaintShow: false
                 })
                 wx.showToast({
                     title: '投诉提交成功',

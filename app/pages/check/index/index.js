@@ -62,6 +62,8 @@ Page({
 		},
 		userInfo: null,
 		staffInfo: null,
+		staffData: null,
+		withdraw: null,
 		orderList: []
 	},
 	onLoad: function () {},
@@ -83,7 +85,39 @@ Page({
 			}
 		})
 	},
-
+	withdrawal() {
+		console.log(this.data.staffData)
+		if (this.data.staffData.price <= 0) {
+			wx.showToast({
+				title: '当前余额不足',
+				icon: 'none',
+				duration: 2000
+			})
+			return false
+		}
+		wx.showModal({
+			title: '提示',
+			content: '是否要进行提现',
+			success: (res) => {
+				if (res.confirm) {
+					http.post('withdrawInfoAdd', {
+						staffId: this.data.userInfo.id
+					}).then((r) => {
+						wx.showToast({
+							title: '提现审核中...',
+							icon: 'none',
+							duration: 2000
+						})
+						setTimeout(() => {
+							this.home()
+						}, 1000);
+					})
+				} else if (res.cancel) {
+					console.log('用户点击取消')
+				}
+			}
+		})
+	},
 	/**
 	 * 选择位置
 	 */
@@ -164,6 +198,8 @@ Page({
 						item.days = that.timeFormat(item.createDate)
 					});
 					that.setData({
+						withdraw: r.withdraw,
+						staffData: r.staffInfo,
 						staffInfo: r.userInfo,
 						orderList: r.orderList
 					})

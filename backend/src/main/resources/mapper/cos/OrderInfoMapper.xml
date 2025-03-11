@@ -249,6 +249,9 @@
         ui.name as userName,
         ui.images as userImages,
         ei.id as evaluateId,
+        ei.content as evaluationContent,
+        ci.id as complaintId,
+        ci.status as complaintStatus,
         ui.phone,
         ai1.address as startAddress,
         ai2.address as endAddress
@@ -259,6 +262,7 @@
         left join evaluate_info ei on (ei.order_id = oi.id)
         left join address_info ai1 on (ai1.id = oi.start_address_id)
         left join address_info ai2 on (ai2.id = oi.end_address_id)
+        left join complaint_info ci on (ci.order_code = oi.code)
         where 1 = 1
         <if test="userId != null">
             AND ui.id = #{userId}

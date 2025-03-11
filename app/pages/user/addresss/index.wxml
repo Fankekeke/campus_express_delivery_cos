@@ -27,7 +27,7 @@
 </view>
 
 <view class="canui-foor-fixed {{TabbarBot=='y'?'canui-tabbar-bottom':''}}">
-    <button class="cu-btn canui-color-gradual shadow-blur round lg" bindtap='add'><text class="icon-add"></text> 新增收货地址</button>
+    <button class="cu-btn canui-color-gradual shadow-blur round lg" bindtap='add'><text class="icon-add"></text> 新增地址</button>
 </view>
 <van-notify id="van-notify" />
 

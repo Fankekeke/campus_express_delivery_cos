@@ -10,13 +10,19 @@ Page({
         startAddress: null,
         endAddress: null,
         user: null,
-        evaluation: []
+        evaluation: [],
+        staffInfo: null
     },
     onLoad: function (options) {
         this.setData({
             commoditId: options.commoditId
         })
         this.getGoodsDetail(options.commoditId)
+    },
+    takePhone() {
+        wx.makePhoneCall({
+            phoneNumber: this.data.user.phone
+          })
     },
     getGoodsDetail(commodityId) {
         http.get('queryOrderDetail', {
@@ -60,9 +66,21 @@ Page({
         wx.getStorage({
             key: 'userInfo',
             success: (res) => {
-                wx.navigateTo({
-                    url: '/pages/user/detail/index?takeUser=' + this.data.goods.userId + '&sendUser=' + res.data.id + '&otherName=' + this.data.user.name + ''
-                });
+                http.get('getUserInfoById', {
+                    userId: res.data.id
+                }).then((r) => {
+                    if (r.data.type == null || r.data.type == 1) {
+                        wx.showToast({
+                            title: '请先申请成为配送员',
+                            icon: 'none',
+                            duration: 1000
+                        })
+                    } else if (r.data.type != null && r.data.type == 2) {
+                        wx.navigateTo({
+                            url: '/pages/user/detail/index?takeUser=' + this.data.goods.userId + '&sendUser=' + res.data.id + '&otherName=' + this.data.user.name + ''
+                        });
+                    }
+                })
             },
             fail: res => {
                 wx.showToast({
@@ -126,41 +144,45 @@ Page({
         }
     },
     buyGoods() {
-        if (this.data.goods.onPut == 0) {
-            wx.showToast({
-                title: '该商品已下架',
-                icon: 'none',
-                duration: 2000
-            })
-        } else {
-            wx.getStorage({
-                key: 'userInfo',
-                success: (res) => {
-                    http.get('selDefaultAddress', {
-                        userId: res.data.id
-                    }).then((r) => {
-                        if (r.data == null) {
-                            wx.showToast({
-                                title: '请先设置默认收货地址',
-                                icon: 'none',
-                                duration: 1000
-                            })
-                        } else {
-                            wx.navigateTo({
-                                url: '/pages/scar/order/index?type=2&commodityId=' + this.data.commoditId + ''
-                            })
-                        }
-                    })
-                },
-                fail: res => {
-                    wx.showToast({
-                        title: '请先进行登录',
-                        icon: 'none',
-                        duration: 2000
-                    })
-                }
-            })
-
-        }
+        wx.getStorage({
+            key: 'userInfo',
+            success: (res) => {
+                http.get('getUserInfoById', {
+                    userId: res.data.id
+                }).then((r) => {
+                    if (r.data.type == null || r.data.type == 1) {
+                        wx.showToast({
+                            title: '请先申请成为配送员',
+                            icon: 'none',
+                            duration: 1000
+                        })
+                    } else if (r.data.type != null && r.data.type == 2) {
+                        http.get('checkOrder', {
+                            orderId: this.data.goods.id,
+                            staffId: res.data.id
+                        }).then((r) => {
+                            if (r.data == null) {
+                                wx.showToast({
+                                    title: '请先设置默认收货地址',
+                                    icon: 'none',
+                                    duration: 1000
+                                })
+                            } else {
+                                wx.navigateBack({
+                                    delta: 1
+                                })
+                            }
+                        })
+                    }
+                })
+            },
+            fail: res => {
+                wx.showToast({
+                    title: '请先进行登录',
+                    icon: 'none',
+                    duration: 2000
+                })
+            }
+        })
     }
 });

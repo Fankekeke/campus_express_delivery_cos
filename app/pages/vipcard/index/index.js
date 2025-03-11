@@ -13,8 +13,12 @@ Page({
         }, {
             id: 2,
             name: "已失效"
+        }, {
+            id: 3,
+            name: "优惠券兑换"
         }],
         userInfo: null,
+        userData: null,
         useList: [],
         usedList: [],
     },
@@ -23,20 +27,88 @@ Page({
     },
     onShow() {
         wx.getStorage({
-          key: 'userInfo',
-          success: (res) => {
-            this.setData({ userInfo: res.data })
-            this.getOrderListByUserId(res.data.id)
-          },
-          fail: res => {
-            wx.showToast({
-              title: '请先进行登录',
-              icon: 'none',
-              duration: 2000
-            })
-          }
+            key: 'userInfo',
+            success: (res) => {
+                this.setData({
+                    userInfo: res.data
+                })
+                this.getOrderListByUserId(res.data.id)
+                this.getUserInfo(res.data.id)
+            },
+            fail: res => {
+                wx.showToast({
+                    title: '请先进行登录',
+                    icon: 'none',
+                    duration: 2000
+                })
+            }
         })
-      },
+    },
+    exchange(e) {
+        console.log(e.currentTarget.dataset.id);
+        let that = this
+        wx.showModal({
+            title: '提示',
+            content: '是否要进行兑换',
+            success: (res) => {
+                if (res.confirm) {
+                    if (e.currentTarget.dataset.id == 1 && that.data.userData.integral < 300) {
+                        wx.showToast({
+                            title: '积分不足',
+                            icon: 'none',
+                            duration: 2000
+                        })
+                        return false
+                    } else if (e.currentTarget.dataset.id == 2 && that.data.userData.integral < 200) {
+                        wx.showToast({
+                            title: '积分不足',
+                            icon: 'none',
+                            duration: 2000
+                        })
+                        return false
+                    }
+                    http.get('exchange', {
+                        userId: that.data.userData.id,
+                        type: e.currentTarget.dataset.id
+                    }).then((r) => {
+                        wx.showToast({
+                            title: '兑换成功',
+                            icon: 'none',
+                            duration: 2000
+                        })
+                        wx.getStorage({
+                            key: 'userInfo',
+                            success: (res) => {
+                                that.setData({
+                                    userInfo: res.data
+                                })
+                                that.getOrderListByUserId(res.data.id)
+                                that.getUserInfo(res.data.id)
+                            },
+                            fail: res => {
+                                wx.showToast({
+                                    title: '请先进行登录',
+                                    icon: 'none',
+                                    duration: 2000
+                                })
+                            }
+                        })
+                    })
+                } else if (res.cancel) {
+                    console.log('用户点击取消')
+                }
+            }
+        })
+    },
+    getUserInfo(userId) {
+        http.get('getUserInfoById', {
+            userId: userId
+        }).then((r) => {
+            this.setData({
+                userData: r.data
+            })
+        })
+    },
     tabSelect(e) {
         console.log(e.currentTarget.dataset.id);
         this.setData({

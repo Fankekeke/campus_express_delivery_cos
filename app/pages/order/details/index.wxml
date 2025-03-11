@@ -11,10 +11,9 @@
         <view class="cu-list menu">
             <view class="cu-item">
                 <view class='content'>
-                    <view class="text-df" wx:if="{{ orderInfo.status == 0 }}">等待公司接单</view>
-                    <view class="text-df" wx:if="{{ orderInfo.status == 1 }}">等待分配</view>
-                    <view class="text-df" wx:if="{{ orderInfo.status == 2 }}">正在运输中</view>
-                    <view class="text-df" wx:if="{{ orderInfo.status == 3 }}">运输已完成</view>
+                    <view class="text-df" wx:if="{{ orderInfo.status == 1 }}">等待配送员接单</view>
+                    <view class="text-df" wx:if="{{ orderInfo.status == 2 }}">正在配送中</view>
+                    <view class="text-df" wx:if="{{ orderInfo.status == 3 }}">货物已收货</view>
                     <!-- <view class='text-sm'>2019-03-21 18:00:00</view> -->
                 </view>
                 <view class='action canui-status-3'></view>
@@ -27,10 +26,9 @@
         <view class="cu-list menu bg-white">
             <view class="cu-item">
                 <view class='content'>
-                    <view class="canui-xzwz text-df" wx:if="{{ orderInfo.status == 0 }}">等待公司接单</view>
-                    <view class="canui-xzwz text-df" wx:if="{{ orderInfo.status == 1 }}">等待分配</view>
-                    <view class="canui-xzwz text-df" wx:if="{{ orderInfo.status == 2 }}">正在运输中</view>
-                    <view class="canui-xzwz text-df" wx:if="{{ orderInfo.status == 3 }}">运输已完成</view>
+                    <view class="canui-xzwz text-df" wx:if="{{ orderInfo.status == 1 }}">等待配送员接单</view>
+                    <view class="canui-xzwz text-df" wx:if="{{ orderInfo.status == 2 }}">正在配送中</view>
+                    <view class="canui-xzwz text-df" wx:if="{{ orderInfo.status == 3 }}">货物已收货</view>
                     <!-- <view class='text-gray text-sm'>2019-03-21 18:00:00</view> -->
                 </view>
                 <!-- <view class='action'><view class='text-grey icon-right'></view></view> -->
@@ -43,10 +41,8 @@
         <view class="canui-card-order">
             <view class="canui-order-item bg-white">
                 <view class="head-title-box">
-                    <navigator open-type="navigate" hover-class='none' url="/pages/shop/index/index?shopId={{ merchant.id }}">
-                        <text class="icon-shop"></text>
-                        <text>{{ merchant.name }}</text>
-                        <text class="icon-right"></text>
+                    <navigator open-type="navigate" hover-class='none'>
+                        <text style="font-size: 13px;line-height: 25px">{{ orderInfo.orderName }}</text>
                     </navigator>
                 </view>
                 <view class="cu-list menu menu-avatar">
@@ -65,18 +61,18 @@
 
         <view class="text-gray text-sm solid-bottom order-price-log">
             <view class="log-list">
-                <text>价格</text> <text class="text-price canui-text-right">{{ orderInfo.amount }}</text>
+                <text>公里数</text> <text class="text-price canui-text-right">{{ orderInfo.kilometre }}公里</text>
             </view>
             <view class="log-list">
-                <text>优惠价格</text> <text class="text-price canui-text-right">{{ orderInfo.discountAmount }}</text>
+                <text>物品重量</text> <text class="text-price canui-text-right">{{ orderInfo.weight }}KG</text>
             </view>
             <view class="log-list bg-white text-df">
                 <text>折后总价</text><text class="text-sm text-gray">（手续费除外）</text>
-                <text class="text-price canui-text-right">{{ orderInfo.afterAmount }}</text>
+                <text class="text-price canui-text-right">{{ orderInfo.afterOrderPrice }}</text>
             </view>
         </view>
         <view class="order-price-log-zj">
-            <text>总公里数</text> <text class="canui-text-right text-red">{{ orderInfo.distanceLength }}公里</text>
+            <text>总公里数</text> <text class="canui-text-right text-red">{{ orderInfo.kilometre }}公里</text>
         </view>
         <view class="order-price-log-zj">
             <text>时间</text> <text class="canui-text-right">{{orderInfo.createDate}}</text>
@@ -88,8 +84,8 @@
             <view class="cu-item">
                 <view class='content'>
                     <view class="text-df">{{ user.name }} <text>{{ user.phone }}</text></view>
-                    <view class='text-gray text-sm canui-xzwz'>起始地址：{{ orderInfo.startAddress }}</view>
-                    <view class='text-gray text-sm canui-xzwz'>运输地址：{{ orderInfo.endAddress }}</view>
+                    <view class='text-gray text-sm canui-xzwz'>物品地址：{{ startAddress.address }}</view>
+                    <view class='text-gray text-sm canui-xzwz'>送货地址：{{ endAddress.address }}</view>
                 </view>
             </view>
         </view>
@@ -115,14 +111,14 @@
         </view> -->
     </view>
 
-    <view class="grid col-2 flex bg-white order-contact-box">
+    <!-- <view class="grid col-2 flex bg-white order-contact-box">
         <view class="contact-table" bindtap='message' data-shopId='{{ merchant.userInfoId }}' data-shopName='{{ merchant.name }}'>
-            <text class="icon-service text-blue"></text> 联系客服
+            <text class="icon-service text-blue"></text> 联系
         </view>
         <view class="contact-table" bindtap='takePhone'>
             <text class="icon-phone text-blue"></text> 电话联系
         </view>
-    </view>
+    </view> -->
 
 </view>
 

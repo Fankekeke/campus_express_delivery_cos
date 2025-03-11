@@ -76,5 +76,9 @@ public class StaffInfo implements Serializable {
 
     @TableField(exist = false)
     private Integer merchantId;
+    @TableField(exist = false)
+    private BigDecimal score;
+    @TableField(exist = false)
+    private Integer orderNum;
 
 }
