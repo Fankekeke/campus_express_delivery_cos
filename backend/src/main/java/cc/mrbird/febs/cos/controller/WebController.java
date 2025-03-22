@@ -69,6 +69,8 @@ public class WebController {
 
     private final IStaffInfoService staffInfoService;
 
+    private final IExchangeInfoService exchangeInfoService;
+
 
     /**
      * File 转MultipartFile
@@ -728,9 +730,14 @@ public class WebController {
      * @return 结果
      */
     @GetMapping("/exchange")
+    @Transactional(rollbackFor = Exception.class)
     public R exchange(Integer userId, Integer type) {
         DiscountInfo discountInfo = new DiscountInfo();
         UserInfo userInfo = userInfoService.getById(userId);
+
+        ExchangeInfo exchangeInfo = new ExchangeInfo();
+        exchangeInfo.setUserId(userId);
+        exchangeInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
         if (type == 1) {
             discountInfo.setCode("DC-" + System.currentTimeMillis());
             discountInfo.setStatus("0");
@@ -742,6 +749,8 @@ public class WebController {
             discountInfo.setContent("500-100满减券");
             discountInfo.setType("1");
             userInfo.setIntegral(NumberUtil.sub(userInfo.getIntegral(), BigDecimal.valueOf(300)));
+            exchangeInfo.setMaterialId(1);
+            exchangeInfo.setIntegral(new BigDecimal(300));
         } else {
             discountInfo.setCode("DC-" + System.currentTimeMillis());
             discountInfo.setStatus("0");
@@ -752,7 +761,10 @@ public class WebController {
             discountInfo.setContent("八折无门槛优惠券");
             discountInfo.setType("2");
             userInfo.setIntegral(NumberUtil.sub(userInfo.getIntegral(), BigDecimal.valueOf(200)));
+            exchangeInfo.setMaterialId(2);
+            exchangeInfo.setIntegral(new BigDecimal(200));
         }
+        exchangeInfoService.save(exchangeInfo);
         discountInfoService.save(discountInfo);
         return R.ok(userInfoService.updateById(userInfo));
     }

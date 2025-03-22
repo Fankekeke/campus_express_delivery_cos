@@ -166,18 +166,6 @@ export default {
           }
         }
       }, {
-        title: '物品图片',
-        dataIndex: 'materialImages',
-        customRender: (text, record, index) => {
-          if (!record.materialImages) return <a-avatar shape="square" icon="user" />
-          return <a-popover>
-            <template slot="content">
-              <a-avatar shape="square" size={132} icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.materialImages.split(',')[0] } />
-            </template>
-            <a-avatar shape="square" icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.materialImages.split(',')[0] } />
-          </a-popover>
-        }
-      }, {
         title: '兑换记录时间',
         dataIndex: 'createDate',
         customRender: (text, row, index) => {

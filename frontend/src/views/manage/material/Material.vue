@@ -7,7 +7,7 @@
           <div :class="advanced ? null: 'fold'">
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="物品编号"
+                label="兑换编号"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}">
                 <a-input v-model="queryParams.code"/>
@@ -15,7 +15,7 @@
             </a-col>
             <a-col :md="6" :sm="24">
               <a-form-item
-                label="物品名称"
+                label="兑换名称"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}">
                 <a-input v-model="queryParams.name"/>
@@ -31,7 +31,7 @@
     </div>
     <div>
       <div class="operator">
-        <a-button type="primary" ghost @click="add">新增</a-button>
+<!--        <a-button type="primary" ghost @click="add">新增</a-button>-->
         <a-button @click="batchDelete">删除</a-button>
       </div>
       <!-- 表格区域 -->
@@ -118,40 +118,18 @@ export default {
     }),
     columns () {
       return [{
-        title: '物品编号',
+        title: '兑换编号',
         dataIndex: 'code'
       }, {
-        title: '物品名称',
+        title: '兑换名称',
         dataIndex: 'name'
       }, {
-        title: '物品图片',
-        dataIndex: 'images',
-        customRender: (text, record, index) => {
-          if (!record.images) return <a-avatar shape="square" icon="user" />
-          return <a-popover>
-            <template slot="content">
-              <a-avatar shape="square" size={132} icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
-            </template>
-            <a-avatar shape="square" icon="user" src={ 'http://127.0.0.1:9527/imagesWeb/' + record.images.split(',')[0] } />
-          </a-popover>
-        }
-      }, {
-        title: '物品描述',
+        title: '兑换描述',
         dataIndex: 'content',
         scopedSlots: { customRender: 'contentShow' }
       }, {
         title: '所需积分',
         dataIndex: 'integral',
-        customRender: (text, row, index) => {
-          if (text !== null) {
-            return text
-          } else {
-            return '- -'
-          }
-        }
-      }, {
-        title: '销量',
-        dataIndex: 'saleNum',
         customRender: (text, row, index) => {
           if (text !== null) {
             return text
@@ -169,10 +147,6 @@ export default {
             return '- -'
           }
         }
-      }, {
-        title: '操作',
-        dataIndex: 'operation',
-        scopedSlots: {customRender: 'operation'}
       }]
     }
   },
@@ -194,7 +168,7 @@ export default {
     },
     handlematerialAddSuccess () {
       this.materialAdd.visiable = false
-      this.$message.success('新增物品成功')
+      this.$message.success('新增兑换成功')
       this.search()
     },
     edit (record) {
@@ -206,7 +180,7 @@ export default {
     },
     handlematerialEditSuccess () {
       this.materialEdit.visiable = false
-      this.$message.success('修改物品成功')
+      this.$message.success('修改兑换成功')
       this.search()
     },
     handleDeptChange (value) {
