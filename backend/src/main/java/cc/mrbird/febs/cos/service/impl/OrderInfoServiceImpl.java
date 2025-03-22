@@ -670,7 +670,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         }
         StaffInfo staffInfo = staffInfoService.getOne(Wrappers.<StaffInfo>lambdaQuery().eq(StaffInfo::getUserId, userId));
         result.put("staffInfo", staffInfo);
-        result.put("withdraw", withdrawInfoService.getOne(Wrappers.<WithdrawInfo>lambdaQuery().eq(WithdrawInfo::getStaffId, staffInfo.getId()).eq(WithdrawInfo::getStatus, "0")));
+        result.put("withdraw", staffInfo == null ? null : withdrawInfoService.getOne(Wrappers.<WithdrawInfo>lambdaQuery().eq(WithdrawInfo::getStaffId, staffInfo.getId()).eq(WithdrawInfo::getStatus, "0")));
         // 获取待接单订单
         result.put("orderList", this.queryOrderRecommend(longitude, latitude, userId));
         return result;
