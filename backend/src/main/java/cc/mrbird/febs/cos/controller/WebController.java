@@ -1,6 +1,7 @@
 package cc.mrbird.febs.cos.controller;
 
 import cc.mrbird.febs.common.exception.FebsException;
+import cc.mrbird.febs.common.utils.GpsCoordinateUtils;
 import cc.mrbird.febs.common.utils.R;
 import cc.mrbird.febs.cos.dao.NotifyInfoMapper;
 import cc.mrbird.febs.cos.entity.*;
@@ -332,6 +333,12 @@ public class WebController {
             addressInfoService.update(Wrappers.<AddressInfo>lambdaUpdate().set(AddressInfo::getDefaultAddress, 0).eq(AddressInfo::getUserId, addressInfo.getUserId()));
         }
         addressInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
+        // GCJ-02 to 百度坐标系 BD-09
+        if (addressInfo.getLongitude() != null && addressInfo.getLatitude() != null) {
+            double[] gcj02 = GpsCoordinateUtils.calGCJ02toBD09(addressInfo.getLatitude().doubleValue(), addressInfo.getLongitude().doubleValue());
+            addressInfo.setLatitude(BigDecimal.valueOf(gcj02[0]));
+            addressInfo.setLongitude(BigDecimal.valueOf(gcj02[1]));
+        }
         return R.ok(addressInfoService.save(addressInfo));
     }
 
@@ -345,6 +352,12 @@ public class WebController {
     public R addressEdit(@RequestBody AddressInfo addressInfo) {
         if (addressInfo.getDefaultAddress() == 1) {
             addressInfoService.update(Wrappers.<AddressInfo>lambdaUpdate().set(AddressInfo::getDefaultAddress, 0).eq(AddressInfo::getUserId, addressInfo.getUserId()));
+        }
+        // GCJ-02 to 百度坐标系 BD-09
+        if (addressInfo.getLongitude() != null && addressInfo.getLatitude() != null) {
+            double[] gcj02 = GpsCoordinateUtils.calGCJ02toBD09(addressInfo.getLatitude().doubleValue(), addressInfo.getLongitude().doubleValue());
+            addressInfo.setLatitude(BigDecimal.valueOf(gcj02[0]));
+            addressInfo.setLongitude(BigDecimal.valueOf(gcj02[1]));
         }
         return R.ok(addressInfoService.updateById(addressInfo));
     }
