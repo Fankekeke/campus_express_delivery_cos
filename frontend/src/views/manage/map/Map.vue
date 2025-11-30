@@ -234,6 +234,7 @@ export default {
   },
   data () {
     return {
+      realTimeLocation: null,
       userInfo: null,
       orderInfo: null,
       startAddressInfo: null,
@@ -287,6 +288,29 @@ export default {
     }
   },
   methods: {
+    showDeliverymanLocation() {
+      if (this.realTimeLocation && this.realTimeLocation.longitude && this.realTimeLocation.latitude) {
+        // 创建配送员位置点
+        const point = new BMap.Point(this.realTimeLocation.longitude, this.realTimeLocation.latitude);
+
+        // 创建较小的自定义图标
+        const icon = new BMap.Icon("http://127.0.0.1:9527/imagesWeb/外卖员.png", new BMap.Size(50, 50));
+
+        // 创建标记图标
+        const marker = new BMap.Marker(point, {icon: icon});
+
+        // 在地图上添加标记
+        baiduMap.rMap().addOverlay(marker);
+
+        // 添加信息窗口
+        const infoWindow = new BMap.InfoWindow("配送员当前位置", {
+          offset: new BMap.Size(0, -20)
+        });
+        marker.addEventListener("click", function () {
+          this.openInfoWindow(infoWindow);
+        });
+      }
+    },
     dataInit (orderId) {
       this.$get(`/cos/order-info/${orderId}`).then((r) => {
         this.userInfo = r.data.user
@@ -296,10 +320,15 @@ export default {
         this.discountInfo = r.data.discount
         this.staffInfo = r.data.staff
         this.evaluateInfo = r.data.evaluate
+        this.realTimeLocation = r.data.realTimeLocation
         setTimeout(() => {
           baiduMap.initMap('areas')
           this.getLocal()
           this.navigation(this.startAddressInfo, this.endAddressInfo)
+          if (this.realTimeLocation != null && this.orderInfo.status == 2) {
+            console.log(123)
+            this.showDeliverymanLocation()
+          }
         }, 200)
       })
     },

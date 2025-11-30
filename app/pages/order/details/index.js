@@ -12,7 +12,19 @@ Page({
         commoditId: null,
         startAddress: null,
         endAddress: null,
-        vehicle: null
+        vehicle: null,
+        markers: [{
+            id: 0,
+            latitude: 39.980014,
+            longitude: 116.313972,
+            iconPath: 'http://127.0.0.1:9527/imagesWeb/外卖员.png', // 配送员图标路径
+            width: 30,
+            height: 30,
+            callout: {
+                content: '配送员位置',
+                display: 'ALWAYS'
+            }
+        }]
     },
     onLoad: function (options) {
         this.getOrderDetail(options.orderId)
@@ -37,7 +49,7 @@ Page({
     takePhone() {
         wx.makePhoneCall({
             phoneNumber: this.data.user.phone
-          })
+        })
     },
     getOrderDetail(orderId) {
         http.get('queryOrderDetail', {
@@ -53,6 +65,23 @@ Page({
                 endAddress: r.endAddress,
                 user: r.user
             })
+            if (r.realTimeLocation != null) {
+                this.setData({
+                    markers: [{
+                        id: 0,
+                        latitude: r.realTimeLocation.latitude,
+                        longitude: r.realTimeLocation.longitude,
+                        iconPath: 'http://127.0.0.1:9527/imagesWeb/外卖员.png', // 配送员图标路径
+                        width: 30,
+                        height: 30,
+                        callout: {
+                            content: '配送员位置',
+                            display: 'ALWAYS'
+                        }
+                    }]
+                })
+                console.log(this.data.markers)
+            }
         })
     }
 });

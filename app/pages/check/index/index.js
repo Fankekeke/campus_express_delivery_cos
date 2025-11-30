@@ -1,5 +1,11 @@
 const app = getApp();
 let http = require('../../../utils/request')
+var QQMapWX = require('../../../common/qqmap-wx-jssdk');
+ 
+// 实例化API核心类
+var qqmapsdk = new QQMapWX({
+  key: 'DCOBZ-J5JRP-MITDA-VER54-WR43E-RLFLC' // 必填	
+});
 Page({
 	data: {
 		StatusBar: app.globalData.StatusBar,
@@ -75,6 +81,7 @@ Page({
 					userInfo: res.data
 				})
 				this.home()
+				//this.setUserLocation()
 			},
 			fail: res => {
 				wx.showToast({
@@ -175,6 +182,27 @@ Page({
 		} else {
 			return time;
 		}
+	},
+	setUserLocation() {
+		let latitude = null;
+		let longitude = null;
+		let that = this
+		wx.getLocation({
+			type: 'wgs84',
+			success(res) {
+				latitude = res.latitude
+				longitude = res.longitude
+				let params = {
+					latitude,
+					longitude,
+					userId: that.data.userInfo.id
+				}
+				console.log(params)
+				http.get('addRealTimeLocation', params).then((r) => {
+					
+				})
+			}
+		})
 	},
 	home() {
 		let latitude = null;

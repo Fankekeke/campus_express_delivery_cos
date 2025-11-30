@@ -53,6 +53,8 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
 
     private final IPriceRulesService priceRulesService;
 
+    private final IRealTimeLocationService realTimeLocationService;
+
     /**
      * 分页获取订单信息
      *
@@ -512,6 +514,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
                 put("staff", null);
                 put("evaluate", null);
                 put("discount", null);
+                put("realTimeLocation", null);
             }
         };
         // 订单信息
@@ -533,6 +536,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         if (StrUtil.isNotEmpty(orderInfo.getStaffIds())) {
             StaffInfo staffInfo = staffInfoService.getById(orderInfo.getStaffIds());
             result.put("staff", staffInfo);
+            result.put("realTimeLocation", realTimeLocationService.getOne(Wrappers.<RealTimeLocation>lambdaQuery().eq(RealTimeLocation::getUserId, staffInfo.getUserId())));
         }
 
         // 评价信息

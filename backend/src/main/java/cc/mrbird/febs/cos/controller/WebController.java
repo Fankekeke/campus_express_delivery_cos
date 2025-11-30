@@ -72,6 +72,8 @@ public class WebController {
 
     private final IExchangeInfoService exchangeInfoService;
 
+    private final IRealTimeLocationService realTimeLocationService;
+
 
     /**
      * File 转MultipartFile
@@ -124,6 +126,8 @@ public class WebController {
         httpClient.close();
         response.close();
         String openid = JSON.parseObject(res).get("openid").toString();
+
+//        String openid = "oeDfR58jT62s8t7l5nQbPYdss5-I";
         System.out.println("openid" + openid);
         int count = userInfoService.count(Wrappers.<UserInfo>lambdaQuery().eq(UserInfo::getOpenId, openid));
         if (count > 0) {
@@ -273,6 +277,19 @@ public class WebController {
      */
     @GetMapping("/home/user")
     public R home(BigDecimal longitude, BigDecimal latitude, Integer userId) {
+        RealTimeLocation realTimeLocation = realTimeLocationService.getOne(Wrappers.<RealTimeLocation>lambdaQuery().eq(RealTimeLocation::getUserId, userId));
+        if (realTimeLocation == null) {
+            realTimeLocation = new RealTimeLocation();
+            realTimeLocation.setUserId(userId);
+            realTimeLocation.setLongitude(longitude);
+            realTimeLocation.setLatitude(latitude);
+            realTimeLocation.setCreateDate(DateUtil.formatDateTime(new Date()));
+        } else {
+            realTimeLocation.setLongitude(longitude);
+            realTimeLocation.setLatitude(latitude);
+            realTimeLocation.setCreateDate(DateUtil.formatDateTime(new Date()));
+        }
+        realTimeLocationService.saveOrUpdate(realTimeLocation);
         return R.ok(orderInfoService.queryHomeByUserId(longitude, latitude, userId));
     }
 
@@ -805,5 +822,30 @@ public class WebController {
         withdrawInfo.setAccountPrice(BigDecimal.ZERO);
         withdrawInfo.setCreateDate(DateUtil.formatDateTime(new Date()));
         return R.ok(withdrawInfoService.save(withdrawInfo));
+    }
+
+    /**
+     * 添加实时位置信息
+     *
+     * @param userId       用户ID
+     * @param longitude    经度
+     * @param latitude     纬度
+     * @return 添加结果
+     */
+    @GetMapping("/addRealTimeLocation")
+    private R addRealTimeLocation(Integer userId, BigDecimal longitude, BigDecimal latitude) {
+        RealTimeLocation realTimeLocation = realTimeLocationService.getOne(Wrappers.<RealTimeLocation>lambdaQuery().eq(RealTimeLocation::getUserId, userId));
+        if (realTimeLocation == null) {
+            realTimeLocation = new RealTimeLocation();
+            realTimeLocation.setUserId(userId);
+            realTimeLocation.setLongitude(longitude);
+            realTimeLocation.setLatitude(latitude);
+            realTimeLocation.setCreateDate(DateUtil.formatDateTime(new Date()));
+        } else {
+            realTimeLocation.setLongitude(longitude);
+            realTimeLocation.setLatitude(latitude);
+            realTimeLocation.setCreateDate(DateUtil.formatDateTime(new Date()));
+        }
+        return R.ok(realTimeLocationService.saveOrUpdate(realTimeLocation));
     }
 }
